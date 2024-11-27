@@ -2,6 +2,14 @@
 El presente documento pretende ser una introducción al manejo de Kubernetes, para permitir a los programadores con experiencia en Docker poder aprovechar sus características para desplegar aplicaciones.
 No pretende reemplazar la documentación con los detalles técnicos de kubernetes, pero si permitir una introducción más sencilla a este mundo.
 
+# Tabla de contenido
+[[_TOC_]]
+1. [Conceptos](#Conceptos)
+2. [Manejo del Cluster](#Manejo-del-Cluster)
+   2.1. [kubectl](#kubectl)
+   2.2. [Namespaces](#Namespaces)
+4. [Resolucion de Problemas](#fourth-examplehttpwwwfourthexamplecom)
+
 ---
 
 ## Conceptos
@@ -27,7 +35,8 @@ Por ejemplo, se puede tener un config map en desarrollo que indique al apache a 
 
 ## Manejo del Cluster
 
-### kubectl: Es el comando oficial de Kubernetes para administrar los clusters.
+### kubectl
+Es el comando oficial de Kubernetes para administrar los clusters.
 
 El formato de uso es el siguiente:
 ```bash
@@ -38,7 +47,7 @@ ejemplo para obtener ayuda sobre como aplicar un archivo de configuracion:
 ```bash
 kubectl apply -h
 ```
-### Namespaces:
+### Namespaces
 Para aplicaciones pequeñas se utiliza un solo namespace para agrupar todos sus recursos. Para aplicaciones más grandes se pueden utilizar más de un namespace, como por ejemplo _systema-backend_ y _systema-frontend_.
 Los nombres soportados son los mismos que para los nombres de dominio, solo pueden contener letras mayusculas, minusculas, numeros y guiones medios.
 Comando:
