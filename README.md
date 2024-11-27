@@ -134,20 +134,17 @@ openssl req -new -key new-user.pem -out juan.csr -subj "/CN=juan"
 ```
 
 #### Crear un CertificateSigningRequest para el cluster
-(Revisar bien esta parte)
+
 ```bash
-cat juan.csr | base64 | tr -d "\n" <<EOF | kubectl apply -f -
+cat <<EOF | kubectl apply -f -
 apiVersion: certificates.k8s.io/v1
 kind: CertificateSigningRequest
 metadata:
-  name: juan
+name: juan-csr
 spec:
-  request: <base64_encoded_csr>
-  signerName: kubernetes.io/kube-apiserver-client
-  expirationSeconds: 86400  # one day
-  usages:
-  - digital signature
-  - key encipherment
-  - client auth
+request: $(cat juan.csr | base64 | tr -d '\n')
+signerName: kubernetes.io/kube-apiserver-client
+usages:
+- client auth
 EOF
 ```
