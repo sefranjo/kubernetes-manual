@@ -27,7 +27,7 @@ Por ejemplo, se puede tener un config map en desarrollo que indique al apache a 
 
 ## Manejo del Cluster
 
-**kubectl:** Es el comando oficial de Kubernetes para administrar los clusters.
+### kubectl: Es el comando oficial de Kubernetes para administrar los clusters.
 
 El formato de uso es el siguiente:
 ```bash
@@ -38,8 +38,7 @@ ejemplo para obtener ayuda sobre como aplicar un archivo de configuracion:
 ```bash
 kubectl apply -h
 ```
-
-**Namespaces:**
+### Namespaces:
 Para aplicaciones pequeñas se utiliza un solo namespace para agrupar todos sus recursos. Para aplicaciones más grandes se pueden utilizar más de un namespace, como por ejemplo _systema-backend_ y _systema-frontend_.
 Los nombres soportados son los mismos que para los nombres de dominio, solo pueden contener letras mayusculas, minusculas, numeros y guiones medios.
 Comando:
@@ -49,6 +48,58 @@ kubectl create namespace NAME [--dry-run=server|client|none]
 Ejemplo:
 ```bash
 kubectl create namespace nuevo-namespace
+```
+
+#### Para setear el namespace actual para trabajar
+```bash
+kubectl config set-context --current --namespace=namespace-name
+```
+Ejemplo para situarse en el namespace _aplicacion1_
+```bash
+kubectl config set-context --current --namespace=aplicacion1
+```
+
+### Service Account:
+Se utilizan para la automatización de tareas. Lo más común es crear al menos una por namespace para permitir a los pipelines ejecutar tareas sobre el namespace.
+Siguiendo las buenas practicas de la administracion por IaC se puede hacer de la siguiente forma.
+
+Crear un archivo para la definicion de la service account:
+_service-account-cicd-namespace1.yaml_
+```yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cicd
+  namespace: namespace1
+```
+
+Luego otro archivo para la definicion del secret donde se va a guardar el token:
+_secret-service-account-cicd-namespace1.yaml_
+```yaml
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/service-account-token
+metadata:
+  name: cicd-sa-token
+  namespace: namespace1
+  annotations:
+    kubernetes.io/service-account.name: "cicd"
+```
+
+Luego ejecutamos los siguientes comandos para crear los nuevos recursos:
+
+```bash
+# Creamos la service account
+kubectl apply -f service-account-cicd-namespace1.yaml
+
+# Creamos el secret para guardar el token
+kubectl apply -f secret-service-account-cicd-namespace1.yaml
+```
+
+Para obtener el token debemos ejecutar el siguiente comando:
+
+```bash
+TOKEN=$(kubectl get secret $(kubectl get secret | grep cicd-sa-token | awk '{print $1}') -o jsonpath='{.data.token}' | base64 --decode)
 ```
 
 
