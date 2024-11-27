@@ -8,6 +8,7 @@ No pretende reemplazar la documentación con los detalles técnicos de kubernete
 - [Manejo del Cluster](#Manejo-del-Cluster)
   * [Comando kubectl](#kubectl)
   * [Namespaces](#Namespaces)
+  * [Service Account](#Service-Account)
 - [Resolucion de Problemas](#fourth-examplehttpwwwfourthexamplecom)
 
 ---
@@ -68,7 +69,7 @@ Ejemplo para situarse en el namespace _aplicacion1_
 kubectl config set-context --current --namespace=aplicacion1
 ```
 
-### Service Account:
+### Service Account
 Se utilizan para la automatización de tareas. Lo más común es crear al menos una por namespace para permitir a los pipelines ejecutar tareas sobre el namespace.
 Siguiendo las buenas practicas de la administracion por IaC se puede hacer de la siguiente forma.
 
