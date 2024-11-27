@@ -3,12 +3,12 @@ El presente documento pretende ser una introducción al manejo de Kubernetes, pa
 No pretende reemplazar la documentación con los detalles técnicos de kubernetes, pero si permitir una introducción más sencilla a este mundo.
 
 # Tabla de contenido
+
 - [Conceptos](#Conceptos)
--  [Manejo del Cluster](#Manejo-del-Cluster)
-  * [kubectl](#kubectl)
+- [Manejo del Cluster](#Manejo-del-Cluster)
+  * [Comando kubectl](#kubectl)
   * [Namespaces](#Namespaces)
 - [Resolucion de Problemas](#fourth-examplehttpwwwfourthexamplecom)
-
 
 ---
 
@@ -35,7 +35,7 @@ Por ejemplo, se puede tener un config map en desarrollo que indique al apache a 
 
 ## Manejo del Cluster
 
-### kubectl
+### kubectl command
 Es el comando oficial de Kubernetes para administrar los clusters.
 
 El formato de uso es el siguiente:
