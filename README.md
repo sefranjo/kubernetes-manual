@@ -96,10 +96,15 @@ kubectl apply -f service-account-cicd-namespace1.yaml
 kubectl apply -f secret-service-account-cicd-namespace1.yaml
 ```
 
-Para obtener el token debemos ejecutar el siguiente comando:
+Para obtener el token debemos ejecutar el siguiente comando en bash:
 
 ```bash
-TOKEN=$(kubectl get secret $(kubectl get secret | grep cicd-sa-token | awk '{print $1}') -o jsonpath='{.data.token}' | base64 --decode)
+kubectl get secret $(kubectl get secret | grep secret-name | awk '{print $1}') -o jsonpath='{.data.token}' | base64 --decode
+```
+
+Ejemplo para ver el token en el secret _cicd-sa-token_:
+```bash
+kubectl get secret $(kubectl get secret | grep cicd-sa-token | awk '{print $1}') -o jsonpath='{.data.token}' | base64 --decode
 ```
 
 
