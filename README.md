@@ -3,11 +3,12 @@ El presente documento pretende ser una introducción al manejo de Kubernetes, pa
 No pretende reemplazar la documentación con los detalles técnicos de kubernetes, pero si permitir una introducción más sencilla a este mundo.
 
 # Tabla de contenido
-1. [Conceptos](#Conceptos)
-2. [Manejo del Cluster](#Manejo-del-Cluster)
-  2.1 [kubectl](#kubectl)
-  2.2 [Namespaces](#Namespaces)
+- [Conceptos](#Conceptos)
+-  [Manejo del Cluster](#Manejo-del-Cluster)
+  * kubectl](#kubectl)
+  * [Namespaces](#Namespaces)
 4. [Resolucion de Problemas](#fourth-examplehttpwwwfourthexamplecom)
+
 
 ---
 
