@@ -5,9 +5,9 @@ No pretende reemplazar la documentación con los detalles técnicos de kubernete
 # Tabla de contenido
 - [Conceptos](#Conceptos)
 -  [Manejo del Cluster](#Manejo-del-Cluster)
-  * kubectl](#kubectl)
+  * [kubectl](#kubectl)
   * [Namespaces](#Namespaces)
-4. [Resolucion de Problemas](#fourth-examplehttpwwwfourthexamplecom)
+- [Resolucion de Problemas](#fourth-examplehttpwwwfourthexamplecom)
 
 
 ---
