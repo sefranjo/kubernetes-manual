@@ -117,5 +117,6 @@ Ejemplo para ver el token en el secret _cicd-sa-token_:
 kubectl get secret $(kubectl get secret | grep cicd-sa-token | awk '{print $1}') -o jsonpath='{.data.token}' | base64 --decode
 ```
 
+### Manejo de usuarios
 
 
