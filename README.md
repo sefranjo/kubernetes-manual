@@ -119,4 +119,35 @@ kubectl get secret $(kubectl get secret | grep cicd-sa-token | awk '{print $1}')
 
 ### Manejo de usuarios
 
+Para poder crear un usuario hay que realizar los siguientes pasos:
+El ejemplo sirve para crear un usuario llamado _juan_
 
+#### Creación de la clave privada para el nuevo usuario:
+
+```bash
+openssl genrsa -out juan.pem
+```
+
+#### Crear una CSR (Certificate Signing Request)
+```bash
+openssl req -new -key new-user.pem -out juan.csr -subj "/CN=juan"
+```
+
+#### Crear un CertificateSigningRequest para el cluster
+(Revisar bien esta parte)
+```bash
+cat juan.csr | base64 | tr -d "\n" <<EOF | kubectl apply -f -
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: juan
+spec:
+  request: <base64_encoded_csr>
+  signerName: kubernetes.io/kube-apiserver-client
+  expirationSeconds: 86400  # one day
+  usages:
+  - digital signature
+  - key encipherment
+  - client auth
+EOF
+```
