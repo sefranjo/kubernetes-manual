@@ -1,7 +1,11 @@
 # kubernetes-manual
 El presente documento pretende ser una introducción al manejo de Kubernetes, para permitir a los programadores con experiencia en Docker poder aprovechar sus características para desplegar aplicaciones.
+No pretende reemplazar la documentación con los detalles técnicos de kubernetes, pero si permitir una introducción más sencilla a este mundo.
+
+---
 
 ## Conceptos
+
 - **Kubernetes:** Un clúster de Kubernetes es un conjunto de nodos, que pueden ser máquinas físicas o virtuales, donde se ejecutan las aplicaciones en contenedores. Este clúster permite no sólo desplegar aplicaciones de manera eficiente, sino también asegurar su escalabilidad y disponibilidad.
 - **Namespace:** Provee un espacio para agrupar recursos y administrarlos de forma conjunta.
 - **Image Registry:** Provee una ubicación centralizada para el almacenamiento de las imágenes que usan los contenedores.
@@ -18,5 +22,34 @@ Los mismos se definen sobre StorageClasses y Drivers que reflejan las caracterí
 - **Config Maps:** Es un mecanismo de Kubernetes que permite administrar archivos de configuración de forma separada y montarlos sobre los pods.
 Por ejemplo, se puede tener un config map en desarrollo que indique al apache a responder a un nombre de dominio para ambientes bajos y luego otro en producción para indicarle a la aplicación que responda al nombre de dominio de producción. De esa forma no hay necesidad de indicarle al código de la aplicación en que ambiente está trabajando.
 - **Secrets:** Básicamente su funcionamiento es similar a los Config Maps, con la excepción de que su contenido está oculto a simple vista y debe ser codificado y decodificado (en Base64) para almacenarlo o leerlo administrativamente. Pero al montarlo, es accesible de forma transparente para la aplicación. Puede ser utilizado, por ejemplo, para indicarle a la aplicación en un archivo el acceso a la base de datos, incluyendo nombre de dominio del servidor, usuario y clave.
+
+---
+
+## Manejo del Cluster
+
+**kubectl:** Es el comando oficial de Kubernetes para administrar los clusters.
+
+El formato de uso es el siguiente:
+```bash
+kubectl [command] [TYPE] [NAME] [flags]
+```
+Para obtener ayuda se agrega el flag “-h” al final.
+ejemplo para obtener ayuda sobre como aplicar un archivo de configuracion:
+```bash
+kubectl apply -h
+```
+
+**Namespaces:**
+Para aplicaciones pequeñas se utiliza un solo namespace para agrupar todos sus recursos. Para aplicaciones más grandes se pueden utilizar más de un namespace, como por ejemplo _systema-backend_ y _systema-frontend_.
+Los nombres soportados son los mismos que para los nombres de dominio, solo pueden contener letras mayusculas, minusculas, numeros y guiones medios.
+Comando:
+```bash
+kubectl create namespace NAME [--dry-run=server|client|none]
+```
+Ejemplo:
+```bash
+kubectl create namespace nuevo-namespace
+```
+
 
 
