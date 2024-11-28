@@ -9,6 +9,8 @@ No pretende reemplazar la documentación con los detalles técnicos de kubernete
   * [Comando kubectl](#kubectl)
   * [Namespaces](#Namespaces)
   * [Service Account](#Service-Account)
+  * [Manejo de usuarios](#Manejo-de-usuarios)
+    * [Creacion](#Creacion)
 - [Resolucion de Problemas](#fourth-examplehttpwwwfourthexamplecom)
 
 ---
@@ -122,18 +124,21 @@ kubectl get secret $(kubectl get secret | grep cicd-sa-token | awk '{print $1}')
 Para poder crear un usuario hay que realizar los siguientes pasos:
 El ejemplo sirve para crear un usuario llamado _juan_
 
-#### Creación de la clave privada para el nuevo usuario:
+#### Creacion
+A continuacion se describen los pasos necesarios para crear un usuario.
+
+##### Creación de la clave privada para el nuevo usuario:
 
 ```bash
 openssl genrsa -out juan.pem
 ```
 
-#### Crear una CSR (Certificate Signing Request)
+##### Crear una CSR (Certificate Signing Request)
 ```bash
 openssl req -new -key new-user.pem -out juan.csr -subj "/CN=juan"
 ```
 
-#### Crear un CertificateSigningRequest para el cluster
+##### Crear un CertificateSigningRequest para el cluster
 
 ```bash
 cat <<EOF | kubectl apply -f -
