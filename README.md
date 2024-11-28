@@ -50,6 +50,16 @@ ejemplo para obtener ayuda sobre como aplicar un archivo de configuracion:
 ```bash
 kubectl apply -h
 ```
+
+#### Configuracioin de acceso para kubectl
+El comando kubectl lee la configuración de acceso al cluster desde el archivo _config_ (también llamado kubeconfig en otras documentaciones) ubicado en:
+
+##Windows##
+C:\Users\<nombre-de-usuario>\.kube\
+
+##Linux##
+/home/<nombre-de-usuario>/.kube
+
 ### Namespaces
 Para aplicaciones pequeñas se utiliza un solo namespace para agrupar todos sus recursos. Para aplicaciones más grandes se pueden utilizar más de un namespace, como por ejemplo _systema-backend_ y _systema-frontend_.
 Los nombres soportados son los mismos que para los nombres de dominio, solo pueden contener letras mayusculas, minusculas, numeros y guiones medios.
@@ -152,4 +162,24 @@ signerName: kubernetes.io/kube-apiserver-client
 usages:
 - client auth
 EOF
+```
+#### Aprobar la solicitud del certificado en el cluster y obtener el certificado
+
+```bash
+# Aprobar la solicitud de certificado
+kubectl certificate approve juan-csr
+
+# Obtener el certificado
+kubectl get csr USER-NAME-csr -o jsonpath='{.status.certificate}' | base64 -d > juan.crt
+```
+
+#### Conectarse sin generar un archivo kubeconfig
+
+Obtener el nombre del cluster:
+```bash
+kubectl config get-clusters
+```
+# (Ver bien el tema del CA)
+```bash
+kubectl config set-cluster kubernetes — server=https://<Kubernetes_API_server_endpoint>:<port> — certificate-authority=$(cat USER-NAME.csr | base64 | tr -d '\n') — embed-certs=true — kubeconfig=juan.kubeconfig
 ```
