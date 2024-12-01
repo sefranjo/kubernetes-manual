@@ -9,13 +9,15 @@ No pretende reemplazar la documentación con los detalles técnicos de kubernete
 - [Manejo del Cluster](#Manejo-del-Cluster)
   * [Comando kubectl](#kubectl)
   * [Namespaces](#Namespaces)
+    * [Creacion de un namespace](#Creacion-de-un-namespace)
+    * [Eliminacion de un namespace](#Eliminacion-de-un-namespace)
   * [Manejo de usuarios y cuentas de servicio](#Manejo-de-usuarios-y-cuentas-de-servicio)
     * [Service Account](#Service-Account)
-  * [Creacion de un usuario](#Creacion-de-un-usuario)
-  * [Creacion de un rol](#Creacion-de-un-rol)
-  * [Role binding](#Role-binding)
-  * [Borrar un usuario](#Borrar-un-usuario)
-  * [Borrar una cuenta de servicio](#Borrar-una-cuenta-de-servicio)
+    * [Creacion de un usuario](#Creacion-de-un-usuario)
+    * [Creacion de un rol](#Creacion-de-un-rol)
+    * [Role binding](#Role-binding)
+    * [Borrar un usuario](#Borrar-un-usuario)
+    * [Borrar una cuenta de servicio](#Borrar-una-cuenta-de-servicio)
 - [Resolucion de Problemas](#fourth-examplehttpwwwfourthexamplecom)
 
 ---
@@ -80,6 +82,8 @@ C:\Users\<nombre-de-usuario>\.kube\
 ##Linux##
 /home/<nombre-de-usuario>/.kube
 
+**Nota:** Si bien con kubectl es posible crear algunos recursos directamente desde la linea de comandos, en las instrucciones de este documento se va a recomendar siempre crear el archivo yaml y luego aplicarlo, teniendo en cuenta las buenas practicas para tener los recursos documentados en un git y preparando todo para manejar el ciclo de vida de los recursos de la aplicacion utilizando IaC.
+
 ### Namespaces
 Para aplicaciones pequeñas se utiliza un solo namespace para agrupar todos sus recursos. Para aplicaciones más grandes se pueden utilizar más de un namespace, como por ejemplo _systema-backend_ y _systema-frontend_.
 Los nombres soportados son los mismos que para los nombres de dominio, solo pueden contener letras mayusculas, minusculas, numeros y guiones medios.
@@ -92,6 +96,21 @@ Ejemplo:
 kubectl create namespace nuevo-namespace
 ```
 
+#### Creacion de un namespace
+Para crear un namespace llamado _namespace1_ por ejemplo, debemos ejecutar el siguiente comando:
+
+```bash
+ kubectl create namespace namspace1
+```
+
+#### Eliminacion de un namespace
+Para eliminar un namespace llamado _namespace1_ por ejemplo, debemos ejecutar el siguiente comando:
+
+```bash
+kubectl delete namespace namspace1
+```
+
+
 #### Para setear el namespace actual para trabajar
 ```bash
 kubectl config set-context --current --namespace=namespace-name
@@ -103,7 +122,7 @@ kubectl config set-context --current --namespace=aplicacion1
 
 ### Manejo de usuarios y cuentas de servicio
 
-### Service Account
+#### Service Account
 Se utilizan para la automatización de tareas. Lo más común es crear al menos una por namespace para permitir a los pipelines ejecutar tareas sobre el namespace.
 Siguiendo las buenas practicas de la administracion por IaC se puede hacer de la siguiente forma.
 
@@ -153,23 +172,23 @@ kubectl get secret $(kubectl get secret | grep cicd-sa-token | awk '{print $1}')
 
 **Nota:** La cuenta de servicio debera ser asignada a un rol para poder operar sobre el namespace _(role_binding)_
 
-### Creacion de un usuario
+#### Creacion de un usuario
 
 Para poder crear un usuario hay que realizar los siguientes pasos:
 El ejemplo sirve para crear un usuario llamado _juan_
 
-#### Creación de la clave privada para el nuevo usuario:
+##### Creación de la clave privada para el nuevo usuario:
 
 ```bash
 openssl genrsa -out juan.pem
 ```
 
-#### Crear una CSR (Certificate Signing Request)
+##### Crear una CSR (Certificate Signing Request)
 ```bash
 openssl req -new -key new-user.pem -out juan.csr -subj "/CN=juan"
 ```
 
-#### Crear un CertificateSigningRequest para el cluster
+##### Crear un CertificateSigningRequest para el cluster
 
 ```bash
 cat <<EOF | kubectl apply -f -
@@ -185,7 +204,7 @@ spec:
 EOF
 ```
 
-#### Verficiar que la solicitud haya ingresado y este pendiente de aprobacion:
+##### Verficiar que la solicitud haya ingresado y este pendiente de aprobacion:
 
 ```bash
 kubectl get certificatesigningrequests
@@ -195,7 +214,7 @@ NAME       AGE   SIGNERNAME                            REQUESTOR          REQUES
 juan       34s   kubernetes.io/kube-apiserver-client   kubernetes-admin   10d                 Pending
 ```
 
-#### Aprobar la solicitud del certificado en el cluster y obtener el certificado
+##### Aprobar la solicitud del certificado en el cluster y obtener el certificado
 
 ```bash
 # Aprobar la solicitud de certificado
@@ -205,7 +224,7 @@ kubectl certificate approve juan-csr
 kubectl get csr USER-NAME-csr -o jsonpath='{.status.certificate}' | base64 -d > juan.crt
 ```
 
-#### Conectarse sin generar un archivo kubeconfig
+##### Conectarse sin generar un archivo kubeconfig
 
 Obtener el nombre del cluster:
 ```bash
@@ -217,12 +236,12 @@ Obtener el CA root del cluster:
 kubectl get cm kube-root-ca.crt -o jsonpath="{['data']['ca\.crt']}"
 ```
 
-#### Crear el archivo de configuracion:
+##### Crear el archivo de configuracion:
 ```bash
 kubectl config set-cluster <Nombre-del-Cluster> --server=https://<Cluster-IP-Management-API>:<Port> --certificate-authority=./ca.crt --embed-certs=true --kubeconfig=juan.conf
 ```
 
-#### Agregar la información del login para el usuario Juan
+##### Agregar la información del login para el usuario Juan
 ```bash
 kubectl config set-credentials juan --client-key=juan.key --client-certificate=juan.crt --embed-certs=true --kubeconfig=juan.conf
 ```
@@ -231,7 +250,7 @@ kubectl config set-credentials juan --client-key=juan.key --client-certificate=j
 - El archivo resultante puede ser copiado a la carpeta home del usuario, dentro de la carpeta _./kube_ con el nombre _config_ para permitirle al mismo operar sobre el cluster. O agregar el contenido al archivo _config_ preexistente para adicionar el acceso al cluster.
 - El usuario debera ser asignado a un rol para poder operar sobre un cluster _(Role Binding)_
 
-### Creacion de un rol:
+#### Creacion de un rol:
 La configuracion de roles de Kubernetes permite crear un sinfin de combinaciones para permitir ciertas acciones y negar otras.
 A continuacion solo se brindara un ejemplo para crear un rol de admin para un Namespace, que luego podra ser utilizado para una Service Account utilizado para los pipelines para mantener el ciclo de vida de la aplicacion o un programador que deba tener acceso de admin a todos los recursos del mismo.
 
@@ -256,10 +275,10 @@ Luego ejecutamos el siguiente comando para aplicar la configuracion del archivo 
 kubectl apply -f aplicaciones-juan-admin.yaml
 ```
 
-### Role Binding
+#### Role Binding
 Una vez creados los roles, estos deben ser asignados a los usuarios o cuentas de servicio para que las mismas puedan obtener los permisos definidos.
 
-#### Ejemplo de asignacion de rol a usuario
+##### Ejemplo de asignacion de rol a usuario
 Primero creamos el archivo con la configuracion que deseamos definir, en este caso darle permisos de administrador al usuario _juan_ sobre el namespace _aplicaciones-juan_
 
 _aplicaciones-juan-admin-juan-binding.yaml_
@@ -283,7 +302,7 @@ roleRef:
 kubectl apply -f aplicaciones-juan-admin-juan-binding.yaml
 ```
 
-#### Ejemplo de asignacion de rol a cuenta de servicio
+##### Ejemplo de asignacion de rol a cuenta de servicio
 
 Primero creamos el archivo de configuracion que deseamos definir, en este caso darle permisos de administrador a la cuenta de servicio _cicd_ sobre el namespace _aplicaciones-juan_
 
@@ -304,7 +323,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 ```
 
-### Borrar un usuario
+#### Borrar un usuario
 Para borrar un usuario simplemente debemos ejecutar el comando _kubectl config delete-user <nombre-de-usuario>_.
 
 En el siguiente ejemplo veremos la eliminacion del usuario juan:
@@ -313,7 +332,7 @@ En el siguiente ejemplo veremos la eliminacion del usuario juan:
 kubectl config delete-user juan
 ```
 
-### Borrar una cuenta de servicio
+#### Borrar una cuenta de servicio
 Si deseamos eliminar una cuenta de servicio al que le hayamos creado un secret (como en el ejemplo anterior), primero debemos eliminar el secret y luego la cuenta de servicio.
 
 **Nota:** En los siguientes ejemplos tenemos una cuenta de servicio llamada _cicd_ en el namespace _namespace1_ con un secret llamado _cicd-sa-token_.
