@@ -18,6 +18,8 @@ No pretende reemplazar la documentación con los detalles técnicos de kubernete
     * [Role binding](#Role-binding)
     * [Borrar un usuario](#Borrar-un-usuario)
     * [Borrar una cuenta de servicio](#Borrar-una-cuenta-de-servicio)
+  * [Deployment](#Deployment)
+  * [StatefulSet](#StatefulSet)
 - [Resolucion de Problemas](#fourth-examplehttpwwwfourthexamplecom)
 
 ---
@@ -347,5 +349,62 @@ Luego podemos proceder a eliminar la cuenta de servicio con el siguiente comando
 kubectl delete serviceaccount -n namespace1 cicd
 ```
 
+### Deployment
+
+#### Creacion de un deployment:
+
+A continuación se presenta un ejemplo extremadamente simple de como crear un Deployment, se recomienda profundizar más sobre todas las opciones que brindan los deployments para poder aprovecharlos al maximo.
+
+Creamos un archivo para definir el deployment:
+
+deplyment-ejemplo.yaml
+```yaml
+---
+# website::tag::1:: Deploy the training/webapp Docker Container: https://hub.docker.com/r/training/webapp/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world-deployment
+spec:
+  selector:
+    matchLabels:
+      app: hello-world
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: hello-world
+    spec:
+      containers:
+        # website::tag::2:: The container runs a Python webapp on port 5000 that responds with "Hello, World!"
+        - name: hello-world
+          image: training/webapp:latest
+          ports:
+            - containerPort: 5000
+---
+# website::tag::3:: Expose the Python webapp on port 5000 via a Kubernetes LoadBalancer.
+kind: Service
+apiVersion: v1
+metadata:
+  name: hello-world-service
+spec:
+  selector:
+    app: hello-world
+  ports:
+    - protocol: TCP
+      targetPort: 5000
+      port: 80
+  type: ClusterIP
+```
+
+Follow there is a description of the properties in the file:
+Source: https://github.com/gruntwork-io/terratest/blob/master/examples/kubernetes-hello-world-example/hello-world-deployment.yml
+
+
+#### Deployment rolling update
+
+### StatefulSet
+
+#### Creacion de un StatefulSet
 
 
