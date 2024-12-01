@@ -9,6 +9,7 @@ No pretende reemplazar la documentación con los detalles técnicos de kubernete
 - [Manejo del Cluster](#Manejo-del-Cluster)
   * [Comando kubectl](#kubectl)
   * [Namespaces](#Namespaces)
+  * [Creacion de un rol](#Creacion-de-un-rol)
   * [Service Account](#Service-Account)
   * [Manejo de usuarios](#Manejo-de-usuarios)
     * [Creacion](#Creacion)
@@ -97,7 +98,7 @@ Ejemplo para situarse en el namespace _aplicacion1_
 kubectl config set-context --current --namespace=aplicacion1
 ```
 
-### Ejemplo de creacion de un rol para administracion de un Namespace:
+### Creacion de un rol:
 La configuracion de roles de Kubernetes permite crear un sinfin de combinaciones para permitir ciertas acciones y negar otras.
 A continuacion solo se brindara un ejemplo para crear un rol de admin para un Namespace, que luego podra ser utilizado para una Service Account utilizado para los pipelines para mantener el ciclo de vida de la aplicacion o un programador que deba tener acceso de admin a todos los recursos del mismo.
 
