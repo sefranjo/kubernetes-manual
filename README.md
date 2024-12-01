@@ -155,14 +155,25 @@ cat <<EOF | kubectl apply -f -
 apiVersion: certificates.k8s.io/v1
 kind: CertificateSigningRequest
 metadata:
-name: juan-csr
+  name: juan-csr
 spec:
-request: $(cat juan.csr | base64 | tr -d '\n')
-signerName: kubernetes.io/kube-apiserver-client
-usages:
-- client auth
+  request: $(cat juan.csr | base64 | tr -d '\n')
+  signerName: kubernetes.io/kube-apiserver-client
+  usages:
+  - client auth
 EOF
 ```
+
+#### Verficiar que la solicitud haya ingresado y este pendiente de aprobacion:
+
+```bash
+kubectl get certificatesigningrequests
+
+# Y deberiamos obtener una salida similar a la siguiente:
+NAME       AGE   SIGNERNAME                            REQUESTOR          REQUESTEDDURATION   CONDITION
+juan       34s   kubernetes.io/kube-apiserver-client   kubernetes-admin   10d                 Pending
+```
+
 #### Aprobar la solicitud del certificado en el cluster y obtener el certificado
 
 ```bash
@@ -179,7 +190,18 @@ Obtener el nombre del cluster:
 ```bash
 kubectl config get-clusters
 ```
-# (Ver bien el tema del CA)
+
+Obtener el CA root del cluster:
 ```bash
-kubectl config set-cluster kubernetes — server=https://<Kubernetes_API_server_endpoint>:<port> — certificate-authority=$(cat USER-NAME.csr | base64 | tr -d '\n') — embed-certs=true — kubeconfig=juan.kubeconfig
+kubectl get cm kube-root-ca.crt -o jsonpath="{['data']['ca\.crt']}"
+```
+
+# Crear el archivo de configuracion:
+```bash
+kubectl config set-cluster <Nombre-del-Cluster> --server=https://<Cluster-IP-Management-API>:<Port> --certificate-authority=./ca.crt --embed-certs=true --kubeconfig=juan.conf
+```
+
+# Agregar la información del login para el usuario Juan
+```bash
+kubectl config set-credentials juan --client-key=juan.key --client-certificate=juan.crt --embed-certs=true --kubeconfig=juan.conf
 ```
