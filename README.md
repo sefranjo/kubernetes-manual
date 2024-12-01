@@ -13,6 +13,8 @@ No pretende reemplazar la documentación con los detalles técnicos de kubernete
   * [Creacion de un usuario](#Creacion-de-un-usuario)
   * [Creacion de un rol](#Creacion-de-un-rol)
   * [Role binding](#Role-binding)
+  * [Borrar un usuario](#Borrar-un-usuario)
+  * [Borrar una cuenta de servicio](#Borrar-una-cuenta-de-servicio)
 - [Resolucion de Problemas](#fourth-examplehttpwwwfourthexamplecom)
 
 ---
@@ -298,5 +300,30 @@ roleRef:
   name: aplicaciones-juan-admin
   apiGroup: rbac.authorization.k8s.io
 ```
+
+### Borrar un usuario
+Para borrar un usuario simplemente debemos ejecutar el comando _kubectl config delete-user <nombre-de-usuario>_.
+
+En el siguiente ejemplo veremos la eliminacion del usuario juan:
+
+```bash
+kubectl config delete-user juan
+```
+
+### Borrar una cuenta de servicio
+Si deseamos eliminar una cuenta de servicio al que le hayamos creado un secret (como en el ejemplo anterior), primero debemos eliminar el secret y luego la cuenta de servicio.
+
+**Nota:** En los siguientes ejemplos tenemos una cuenta de servicio llamada _cicd_ en el namespace _namespace1_ con un secret llamado _cicd-sa-token_.
+
+Ejemplo:
+```bash
+kubectl delete secret cicd-sa-token -n namespace1
+```
+
+Luego podemos proceder a eliminar la cuenta de servicio con el siguiente comando:
+```bash
+kubectl delete serviceaccount -n namespace1 cicd
+```
+
 
 
