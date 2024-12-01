@@ -36,6 +36,20 @@ Por ejemplo, se puede tener un config map en desarrollo que indique al apache a 
 
 ---
 
+## Prerequisitos:
+
+### Kubectl:
+Bajar e instalar _kubectl_ desde el siguiente enlace:
+[https://kubernetes.io/docs/tasks/tools/](https://kubernetes.io/docs/tasks/tools/)
+
+**Nota:**
+Muchos de los comandos mencionados en este documento necesitan bash, por lo que es recomendable utilizarlos con el shell de bash provisto provisto por Git, CygWin o WSL.
+Si si están accediendo desde Linux no necesitan bajar el cliente de git con el shell de bash.
+
+La opcion mas sencilla podria ser descargarse el cliente offical de GiT e instalarlo con la opcion _"Git Bash"_ habilitada:
+[https://git-scm.com/downloads/win]([https://kubernetes.io/docs/tasks/tools/](https://git-scm.com/downloads/win)
+
+
 ## Manejo del Cluster
 
 ### kubectl
@@ -164,7 +178,7 @@ spec:
 EOF
 ```
 
-#### Verficiar que la solicitud haya ingresado y este pendiente de aprobacion:
+##### Verficiar que la solicitud haya ingresado y este pendiente de aprobacion:
 
 ```bash
 kubectl get certificatesigningrequests
@@ -174,7 +188,7 @@ NAME       AGE   SIGNERNAME                            REQUESTOR          REQUES
 juan       34s   kubernetes.io/kube-apiserver-client   kubernetes-admin   10d                 Pending
 ```
 
-#### Aprobar la solicitud del certificado en el cluster y obtener el certificado
+##### Aprobar la solicitud del certificado en el cluster y obtener el certificado
 
 ```bash
 # Aprobar la solicitud de certificado
@@ -184,7 +198,7 @@ kubectl certificate approve juan-csr
 kubectl get csr USER-NAME-csr -o jsonpath='{.status.certificate}' | base64 -d > juan.crt
 ```
 
-#### Conectarse sin generar un archivo kubeconfig
+##### Conectarse sin generar un archivo kubeconfig
 
 Obtener el nombre del cluster:
 ```bash
@@ -196,12 +210,13 @@ Obtener el CA root del cluster:
 kubectl get cm kube-root-ca.crt -o jsonpath="{['data']['ca\.crt']}"
 ```
 
-# Crear el archivo de configuracion:
+##### Crear el archivo de configuracion:
 ```bash
 kubectl config set-cluster <Nombre-del-Cluster> --server=https://<Cluster-IP-Management-API>:<Port> --certificate-authority=./ca.crt --embed-certs=true --kubeconfig=juan.conf
 ```
 
-# Agregar la información del login para el usuario Juan
+##### Agregar la información del login para el usuario Juan
 ```bash
 kubectl config set-credentials juan --client-key=juan.key --client-certificate=juan.crt --embed-certs=true --kubeconfig=juan.conf
 ```
+
