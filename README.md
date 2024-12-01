@@ -12,6 +12,7 @@ No pretende reemplazar la documentación con los detalles técnicos de kubernete
   * [Service Account](#Service-Account)
   * [Creacion de un usuario](#Creacion-de-un-usuario)
   * [Creacion de un rol](#Creacion-de-un-rol)
+  * [Role binding](#Role-binding)
 - [Resolucion de Problemas](#fourth-examplehttpwwwfourthexamplecom)
 
 ---
@@ -145,6 +146,8 @@ Ejemplo para ver el token en el secret _cicd-sa-token_:
 kubectl get secret $(kubectl get secret | grep cicd-sa-token | awk '{print $1}') -o jsonpath='{.data.token}' | base64 --decode
 ```
 
+**Nota:** La cuenta de servicio debera ser asignada a un rol para poder operar sobre el namespace _(role_binding)_
+
 ### Creacion de un usuario
 
 Para poder crear un usuario hay que realizar los siguientes pasos:
@@ -219,7 +222,9 @@ kubectl config set-cluster <Nombre-del-Cluster> --server=https://<Cluster-IP-Man
 kubectl config set-credentials juan --client-key=juan.key --client-certificate=juan.crt --embed-certs=true --kubeconfig=juan.conf
 ```
 
-**Nota:** El archivo resultante puede ser copiado a la carpeta home del usuario, dentro de la carpeta _./kube_ con el nombre _config_ para permitirle al mismo operar sobre el cluster. O agregar el contenido al archivo _config_ preexistente para adicionar el acceso al cluster.
+**Notas:**
+- El archivo resultante puede ser copiado a la carpeta home del usuario, dentro de la carpeta _./kube_ con el nombre _config_ para permitirle al mismo operar sobre el cluster. O agregar el contenido al archivo _config_ preexistente para adicionar el acceso al cluster.
+- El usuario debera ser asignado a un rol para poder operar sobre un cluster _(Role Binding)_
 
 ### Creacion de un rol:
 La configuracion de roles de Kubernetes permite crear un sinfin de combinaciones para permitir ciertas acciones y negar otras.
@@ -244,6 +249,54 @@ Luego ejecutamos el siguiente comando para aplicar la configuracion del archivo 
 
 ```bash
 kubectl apply -f aplicaciones-juan-admin.yaml
+```
+
+### Role Binding
+Una vez creados los roles, estos deben ser asignados a los usuarios o cuentas de servicio para que las mismas puedan obtener los permisos definidos.
+
+#### Ejemplo de asignacion de rol a usuario
+Primero creamos el archivo con la configuracion que deseamos definir, en este caso darle permisos de administrador al usuario _juan_ sobre el namespace _aplicaciones-juan_
+
+_aplicaciones-juan-admin-juan-binding.yaml_
+```yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: aplicaciones-juan-admin-juan-binding
+  namespace: aplicaciones-juan
+subjects:
+  - kind: user
+    name: juan
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: aplicaciones-juan-admin
+  apiGroup: rbac.authorization.k8s.io
+```
+
+```bash
+kubectl apply -f aplicaciones-juan-admin-juan-binding.yaml
+```
+
+#### Ejemplo de asignacion de rol a cuenta de servicio
+
+Primero creamos el archivo de configuracion que deseamos definir, en este caso darle permisos de administrador a la cuenta de servicio _cicd_ sobre el namespace _aplicaciones-juan_
+
+_aplicaciones-juan-admin-cicd-binding.yaml_
+```yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: aplicaciones-juan-admin-cicd-binding
+  namespace: aplicaciones-juan
+subjects:
+  - kind: ServiceAccount
+    name: cicd
+    namespace: aplicaciones-juan
+roleRef:
+  kind: Role
+  name: aplicaciones-juan-admin
+  apiGroup: rbac.authorization.k8s.io
 ```
 
 
