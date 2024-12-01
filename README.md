@@ -5,6 +5,7 @@ No pretende reemplazar la documentación con los detalles técnicos de kubernete
 ## Tabla de contenido
 
 - [Conceptos](#Conceptos)
+- [Prerequisitos](#Prerequisitos)
 - [Manejo del Cluster](#Manejo-del-Cluster)
   * [Comando kubectl](#kubectl)
   * [Namespaces](#Namespaces)
@@ -49,6 +50,7 @@ Si si están accediendo desde Linux no necesitan bajar el cliente de git con el 
 La opcion mas sencilla podria ser descargarse el cliente offical de GiT e instalarlo con la opcion _"Git Bash"_ habilitada:
 [https://git-scm.com/downloads/win]([https://kubernetes.io/docs/tasks/tools/](https://git-scm.com/downloads/win)
 
+---
 
 ## Manejo del Cluster
 
@@ -93,6 +95,31 @@ kubectl config set-context --current --namespace=namespace-name
 Ejemplo para situarse en el namespace _aplicacion1_
 ```bash
 kubectl config set-context --current --namespace=aplicacion1
+```
+
+### Ejemplo de creacion de un rol para administracion de un Namespace:
+La configuracion de roles de Kubernetes permite crear un sinfin de combinaciones para permitir ciertas acciones y negar otras.
+A continuacion solo se brindara un ejemplo para crear un rol de admin para un Namespace, que luego podra ser utilizado para una Service Account utilizado para los pipelines para mantener el ciclo de vida de la aplicacion o un programador que deba tener acceso de admin a todos los recursos del mismo.
+
+Primero vamos a crear un archivo para definir el rol para un namespace llamado _aplicaciones-juan_
+
+_aplicaciones-juan-admin.yaml_
+```yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: aplicaciones-juan-admin
+  namespace: aplicaciones-juan
+rules:
+  - apiGroups: ["", "apps", "batch", "extensions"]
+    resources: ["deployments", "services", "replicasets", "pods", "jobs", "cronjobs"]
+    verbs: ["*"]
+```
+
+Luego ejecutamos el siguiente comando para aplicar la configuracion del archivo yc rear el rol:
+
+```bash
+kubectl apply -f aplicaciones-juan-admin.yaml
 ```
 
 ### Service Account
@@ -219,4 +246,6 @@ kubectl config set-cluster <Nombre-del-Cluster> --server=https://<Cluster-IP-Man
 ```bash
 kubectl config set-credentials juan --client-key=juan.key --client-certificate=juan.crt --embed-certs=true --kubeconfig=juan.conf
 ```
+
+**Nota:** El archivo resultante puede ser copiado a la carpeta home del usuario, dentro de la carpeta _./kube_ con el nombre _config_ para permitirle al mismo operar sobre el cluster. O agregar el contenido al archivo _config_ preexistente para adicionar el acceso al cluster.
 
