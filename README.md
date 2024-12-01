@@ -9,7 +9,8 @@ No pretende reemplazar la documentación con los detalles técnicos de kubernete
 - [Manejo del Cluster](#Manejo-del-Cluster)
   * [Comando kubectl](#kubectl)
   * [Namespaces](#Namespaces)
-  * [Service Account](#Service-Account)
+  * [Manejo de usuarios y cuentas de servicio](#Manejo-de-usuarios-y-cuentas-de-servicio)
+    * [Service Account](#Service-Account)
   * [Creacion de un usuario](#Creacion-de-un-usuario)
   * [Creacion de un rol](#Creacion-de-un-rol)
   * [Role binding](#Role-binding)
@@ -99,6 +100,8 @@ Ejemplo para situarse en el namespace _aplicacion1_
 ```bash
 kubectl config set-context --current --namespace=aplicacion1
 ```
+
+### Manejo de usuarios y cuentas de servicio
 
 ### Service Account
 Se utilizan para la automatización de tareas. Lo más común es crear al menos una por namespace para permitir a los pipelines ejecutar tareas sobre el namespace.
