@@ -358,7 +358,7 @@ A continuación se presenta un ejemplo extremadamente simple de como crear un De
 Creamos un archivo para definir el deployment:
 
 deplyment-ejemplo.yaml
-```yaml showLineNumbers
+```yaml=
 # website::tag::1:: Deploy the training/webapp Docker Container: https://hub.docker.com/r/training/webapp/
 apiVersion: apps/v1
 kind: Deployment
