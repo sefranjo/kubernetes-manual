@@ -358,49 +358,167 @@ A continuación se presenta un ejemplo extremadamente simple de como crear un De
 Creamos un archivo para definir el deployment:
 
 deplyment-ejemplo.yaml
-```yaml=
-# website::tag::1:: Deploy the training/webapp Docker Container: https://hub.docker.com/r/training/webapp/
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hello-world-deployment
+  name: nginx-deployment
+  labels:
+    app: nginx
 spec:
+  replicas: 3
   selector:
     matchLabels:
-      app: hello-world
-  replicas: 1
+      app: nginx
   template:
     metadata:
       labels:
-        app: hello-world
+        app: nginx
     spec:
       containers:
-        # website::tag::2:: The container runs a Python webapp on port 5000 that responds with "Hello, World!"
-        - name: hello-world
-          image: training/webapp:latest
-          ports:
-            - containerPort: 5000
----
-# website::tag::3:: Expose the Python webapp on port 5000 via a Kubernetes LoadBalancer.
-kind: Service
-apiVersion: v1
-metadata:
-  name: hello-world-service
-spec:
-  selector:
-    app: hello-world
-  ports:
-    - protocol: TCP
-      targetPort: 5000
-      port: 80
-  type: ClusterIP
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+```
+<ins>Descripción del Archivo YAML:</ins>
+
+- **apiVersion:** Define la versión de la API que se está utilizando. En este caso, es apps/v1.
+ 
+- **kind:** Especifica el tipo de recurso, que en este caso es un Deployment.
+ 
+- **metadata:** Contiene información sobre el deployment, como su name y labels.
+ 
+- **spec:** Define la especificación del deployment:
+
+   - **replicas:** Indica el número de réplicas de pods que se desea.
+ 
+   - **selector:** Define cómo seleccionar los pods que este deployment gestionará.
+ 
+   - **template:** Especifica la plantilla para los pods:
+ 
+      - **metadata:** Define las etiquetas de los pods.
+ 
+      - **spec:** Define la especificación de los contenedores dentro de los pods:
+ 
+        - **containers:** Lista de contenedores a ejecutar en cada pod.
+ 
+        - **name:** Nombre del contenedor.
+ 
+        - **image:** Imagen del contenedor que se usará.
+ 
+        - **ports:** Puertos expuestos por el contenedor.
+
+Luego para crear el deployment todo lo que tenemos que hacer es aplicar el archivo yaml con kubectl:
+
+```bash
+kubectl apply -f deplyment-ejemplo.yaml -n namespace1
 ```
 
-Follow there is a description of the properties in the file:
-Source: https://github.com/gruntwork-io/terratest/blob/master/examples/kubernetes-hello-world-example/hello-world-deployment.yml
+### Servicio
+Ahora necesitamos exponer el puerto del del contenedor al cluster y debemos hacerlo con un servicio como el definido a continuacion:
 
+servicio-deployment-ejemplo.yaml
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+```
+<ins>Descripción del Archivo YAML:</ins>
+- **apiVersion:** Define la versión de la API que se está utilizando, en este caso v1.
 
-#### Deployment rolling update
+- **kind:** Especifica el tipo de recurso, que en este caso es un Service.
+
+- **metadata:** Contiene información sobre el servicio, como su name.
+
+- **spec:** Define la especificación del servicio:
+
+    - **selector:** Indica qué pods serán gestionados por este servicio basándose en las etiquetas. En este caso, selecciona los pods con la etiqueta app: nginx.
+
+    - **ports:** Lista de puertos que el servicio expone y el puerto correspondiente en los pods:
+
+        - **protocol:** El protocolo utilizado, aquí es TCP.
+
+        - **port:** El puerto en el cual el servicio estará disponible.
+
+        - **targetPort:** El puerto en los pods al cual el tráfico será redirigido.
+
+    - **type:** Especifica el tipo de servicio. _ClusterIP_ expone el servicio dentro del clúster de Kubernetes utilizando una dirección IP interna. Esto significa que el servicio solo es accesible desde otros recursos dentro del mismo clúster.
+
+Luego solo tenemos que crear el servicio aplicando el archivo de configuración
+```bash
+kubectl apply -f servicio-deployment-ejemplo.yaml -n namespace1
+```
+
+y podremos acceder al servicio del pod utilizando el siguiente nombre de dominio dentro del cluster: _nginx-service.namespace1.svc.cluster.local_
+
+Por ultimo, para poder exponer el servicio al mundo exterior debemos configurarle un ingress:
+
+ingress-deployment-ejemplo.yaml
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingress
+spec:
+  rules:
+  - host: example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-service
+            port:
+              number: 80
+
+```
+
+<ins>Descripción del Archivo YAML:</ins>
+- **apiVersion:** Define la versión de la API que se está utilizando, en este caso networking.k8s.io/v1.
+
+- **kind:** Especifica el tipo de recurso, que en este caso es un Ingress.
+
+- **metadata:** Contiene información sobre el Ingress, como su name.
+
+- **spec:** Define la especificación del Ingress:
+
+    - **rules:** Lista de reglas de enrutamiento. Cada regla tiene un host y una configuración HTTP.
+
+        - **host:** Define el dominio para el cual se aplica la regla.
+
+        - **http:** Define las configuraciones HTTP:
+
+            - **paths:** Lista de rutas y cómo deben ser gestionadas.
+
+                - **path:** Especifica el camino al cual se aplica la regla (/ en este caso).
+
+                - **pathType:** Especifica el tipo de coincidencia del camino (Prefix en este caso).
+
+                - **backend:** Define el servicio backend y puerto al cual se debe redirigir el tráfico:
+
+                    - **service:**
+
+                        - **name:** Nombre del servicio al que se dirigirá el tráfico (nginx-service).
+
+                        - **port:**
+
+                            - **number:** Puerto del servicio al cual se redirigirá el tráfico (80 en este caso).
+
+Luego creanmos el servicio aplicando el archivo de configuracion:
+```bash
+kubectl apply -f ingress-deployment-ejemplo.yaml -n namespace1
+```
 
 ### StatefulSet
 
