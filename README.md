@@ -22,7 +22,6 @@ No pretende reemplazar la documentación con los detalles técnicos de kubernete
     * [Creacion de un deployment](#Creacion-de-un-deployment)
     * [Servicio](#Servicio)
     * [Ingress](#Ingress)
-  * [StatefulSet](#StatefulSet)
 - [Resolucion de Problemas](#fourth-examplehttpwwwfourthexamplecom)
 
 ---
