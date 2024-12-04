@@ -560,7 +560,63 @@ kubectl exec -it aplicacion1-abc1234 -n _namespace1_ -- /bin/bash
 ```
 
 #### Deployment
-En los eventos se puede encontrar informacion reciente sobre lo que esta pasando en un namspace, incluyendo 
+
+##### Rollout
+Esto permite reiniciar los pods para levantar una nueva imagen con una nueva version. En un Deployment, primero se levantan los pods con la nueva version de la aplicacion, luego se transfiere el trafico hacia los nuevos pods y al ultimo se detienen los pods con la version anterior de la aplicacion.
+
+###### Actualizar la version de una aplicacion
+Ejemplo de rollout de un **deployment** llamado _aplicacion1_ en un **namespace** llamado _namespace1_. Teniendo en cuenta que la version de la imagen utilizada es _latest_.
+```bash
+rollout restart deployment/aplicacion1 -n namespace1
+```
+
+Ejemplo de rollout de:
+un **deployment** llamado _aplicacion1_
+con un **container** llamado _app1_
+que utiliza una **imagen** llamada _appimage_
+en un **namespace** llamado _namespace1_.
+Teniendo en cuenta que la version de la imagen utilizada esta especificada y el tag de la **nueva version** es _v2_
+
+```bash
+kubectl set image deployments/aplicacion1 appimage=docker.io/app1:v2 -n namespace1
+```
+
+###### Ver informacion de los rollouts
+Para ver el estado de un rollout de un **deployment** llamado _aplicacion1_ en un **namespace** llamado _namespace1_ debemos ejecutar el siguiente comando.
+```bash
+kubectl rollout status deployments/aplicacion1 -n namespace1
+```
+
+Ver el historial de rollout de un **deployment** llamado _aplicacion1_ en un **namespace** llamado _namespace1_.
+```bash
+kubectl rollout history deployment/aplicacion1 -n namespace1
+```
+
+###### Volver atras
+Para volver atras un rollout y restaurar la version anterior de la aplicacion se pueden utilizar los siguientes comandos.
+
+Volver a la version anterior de la imagen utilizada de un **deployment** llamado _aplicacion1_ en un **namespace** llamado _namespace1_.
+```bash
+kubectl rollout undo deployment/aplicacion1 -n namespace1
+```
+
+Para volver atras teniendo en cuenta un rollout especifico, que se puede obser var con el _kubectl rollout history_,  de un **deployment** llamado _aplicacion1_ en un **namespace** llamado _namespace1_.
+```bash
+kubectl rollout undo deployment/aplicacion1 --to-revision=2 -n namespace1
+```
+
+Para volver atras especificando la version de la imagen, el ejemplo tiene en cuenta lo siguiente:
+un **deployment** llamado _aplicacion1_
+con un **container** llamado _app1_
+que utiliza una **imagen** llamada _appimage_
+en un **namespace** llamado _namespace1_.
+Teniendo en cuenta que la version de la imagen utilizada esta especificada y el tag de la **version anterior es** es _v1_
+
+```bash
+kubectl set image deployments/aplicacion1 appimage=docker.io/app1:v1 -n namespace1
+```
+
+#### Namespace
 
 ##### Eventos
-
+En los eventos se puede encontrar informacion reciente sobre lo que esta pasando en un namspace, incluyendo 
