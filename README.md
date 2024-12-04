@@ -19,6 +19,9 @@ No pretende reemplazar la documentación con los detalles técnicos de kubernete
     * [Borrar un usuario](#Borrar-un-usuario)
     * [Borrar una cuenta de servicio](#Borrar-una-cuenta-de-servicio)
   * [Deployment](#Deployment)
+    * [Creacion de un deployment](#Creacion-de-un-deployment)
+    * [Servicio](#Servicio)
+    * [Ingress](#Ingress)
   * [StatefulSet](#StatefulSet)
 - [Resolucion de Problemas](#fourth-examplehttpwwwfourthexamplecom)
 
@@ -415,7 +418,7 @@ Luego para crear el deployment todo lo que tenemos que hacer es aplicar el archi
 kubectl apply -f deplyment-ejemplo.yaml -n namespace1
 ```
 
-### Servicio
+#### Servicio
 Ahora necesitamos exponer el puerto del del contenedor al cluster y debemos hacerlo con un servicio como el definido a continuacion:
 
 servicio-deployment-ejemplo.yaml
@@ -461,6 +464,7 @@ kubectl apply -f servicio-deployment-ejemplo.yaml -n namespace1
 
 y podremos acceder al servicio del pod utilizando el siguiente nombre de dominio dentro del cluster: _nginx-service.namespace1.svc.cluster.local_
 
+#### Ingress
 Por ultimo, para poder exponer el servicio al mundo exterior debemos configurarle un ingress:
 
 ingress-deployment-ejemplo.yaml
@@ -520,8 +524,5 @@ Luego creanmos el servicio aplicando el archivo de configuracion:
 kubectl apply -f ingress-deployment-ejemplo.yaml -n namespace1
 ```
 
-### StatefulSet
-
-#### Creacion de un StatefulSet
 
 
