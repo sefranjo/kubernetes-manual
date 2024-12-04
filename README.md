@@ -22,7 +22,7 @@ No pretende reemplazar la documentación con los detalles técnicos de kubernete
     * [Creacion de un deployment](#Creacion-de-un-deployment)
     * [Servicio](#Servicio)
     * [Ingress](#Ingress)
-- [Resolucion de Problemas](#fourth-examplehttpwwwfourthexamplecom)
+- [Resolucion de Problemas](#Resolucion-de-Problemas)
 
 ---
 
@@ -522,6 +522,9 @@ Luego creanmos el servicio aplicando el archivo de configuracion:
 ```bash
 kubectl apply -f ingress-deployment-ejemplo.yaml -n namespace1
 ```
+
+### Resolucion de Problemas
+A continuación se presentan comandos que pueden ayudar a identificar y arreglar problemas.
 
 
 
