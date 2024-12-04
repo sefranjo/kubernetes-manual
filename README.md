@@ -22,7 +22,7 @@ No pretende reemplazar la documentación con los detalles técnicos de kubernete
     * [Creacion de un deployment](#Creacion-de-un-deployment)
     * [Servicio](#Servicio)
     * [Ingress](#Ingress)
-- [Resolucion de Problemas](#Resolucion-de-Problemas)
+- [Comandos utiles](#Comandos-utiles)
 
 ---
 
@@ -523,8 +523,44 @@ Luego creanmos el servicio aplicando el archivo de configuracion:
 kubectl apply -f ingress-deployment-ejemplo.yaml -n namespace1
 ```
 
-### Resolucion de Problemas
-A continuación se presentan comandos que pueden ayudar a identificar y arreglar problemas.
+### Comandos utiles
+A continuación se presentan los comandos más utilizados para ver el estado de los recursos y analizar problemas si fuera necesario:
 
+#### Pods
 
+##### Listar los pods
+```bash
+#Ver el listado de los pods de un namespace llamado namespace1
+kubectl get pods -n namespace1
+
+#Ver el listado de los pods de un namespace llamado namespace1 con información extendida
+kubectl get pods -n namespace1 -o wide
+```
+
+##### Logs
+Ver los logs de un **pod** llamado _aplicacion1-abc1234_ de un **deployment** llamado _aplicacion1_ en un **namespace** llamado _namespace1_
+```bash
+# Es quizás, el primer comando a ejecutar para ver si un pod inicio y esta funcionando correctamente
+kubectl describe pods/aplicacion1 -n _namespace1_
+
+# Ver los logs de un pod
+kubectl logs aplicacion1-abc1234 -n _namespace1_
+
+# Ver los logs de todos los pods corriendo dentro de un deployment
+kubectl logs deployment/aplicacion1
+```
+
+##### Ejecturar comandos dentro de un pod
+Si es necesario entrar a un pod para ejecutar comandos se puede hacer de la siguiente forma.
+
+El siguiente ejemplo se muestra teniendo en cuenta un **pod** llamado _aplicacion1-abc1234_ en un **namespace** llamado _namespace1_ y permite abrir una sesión interactiva de shell.
+
+```bash
+kubectl exec -it aplicacion1-abc1234 -n _namespace1_ -- /bin/bash
+```
+
+#### Deployment
+En los eventos se puede encontrar informacion reciente sobre lo que esta pasando en un namspace, incluyendo 
+
+##### Eventos
 
