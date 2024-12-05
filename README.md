@@ -22,7 +22,12 @@ No pretende reemplazar la documentación con los detalles técnicos de kubernete
     * [Creacion de un deployment](#Creacion-de-un-deployment)
     * [Servicio](#Servicio)
     * [Ingress](#Ingress)
-- [Resolucion de Problemas](#Resolucion-de-Problemas)
+- [Comandos utiles](#Comandos-utiles)
+    * [Pods](#Pods)
+    * [Deployment](#Deployment)
+    * [Namespace](#Namespace)
+    * [Port forward](#Port-forward)
+    * [Worker Nodes](#Worker-Nodes)
 
 ---
 
@@ -523,8 +528,161 @@ Luego creanmos el servicio aplicando el archivo de configuracion:
 kubectl apply -f ingress-deployment-ejemplo.yaml -n namespace1
 ```
 
-### Resolucion de Problemas
-A continuación se presentan comandos que pueden ayudar a identificar y arreglar problemas.
+### Comandos utiles
+A continuación se presentan los comandos más utilizados para ver el estado de los recursos y analizar problemas si fuera necesario:
 
+#### Pods
 
+##### Listar los pods
+```bash
+#Ver el listado de los pods de un namespace llamado namespace1
+kubectl get pods -n namespace1
 
+#Ver el listado de los pods de un namespace llamado namespace1 con información extendida
+kubectl get pods -n namespace1 -o wide
+```
+
+##### Logs
+Ver los logs de un **pod** llamado _aplicacion1-abc1234_ de un **deployment** llamado _aplicacion1_ en un **namespace** llamado _namespace1_
+```bash
+# Es quizás, el primer comando a ejecutar para ver si un pod inicio y esta funcionando correctamente
+kubectl describe pods/aplicacion1 -n _namespace1_
+
+# Ver los logs de un pod
+kubectl logs aplicacion1-abc1234 -n _namespace1_
+
+# Ver los logs de todos los pods corriendo dentro de un deployment
+kubectl logs deployment/aplicacion1
+```
+
+##### Ejecturar comandos dentro de un pod
+Si es necesario entrar a un pod para ejecutar comandos se puede hacer de la siguiente forma.
+
+El siguiente ejemplo se muestra teniendo en cuenta un **pod** llamado _aplicacion1-abc1234_ en un **namespace** llamado _namespace1_ y permite abrir una sesión interactiva de shell.
+
+```bash
+kubectl exec -it aplicacion1-abc1234 -n _namespace1_ -- /bin/bash
+```
+##### Metricas de performance
+Para ver las metricas de performance de un **pod** llamado _aplicacion1-abc1234_ en un **namespace** llamado _namespace1_ podemos ejecutar el siguiente comando.
+```bash
+kubectl top pod _aplicacion1-abc1234 -n namespace1
+```
+
+#### Deployment
+
+##### Rollout
+Esto permite reiniciar los pods para levantar una nueva imagen con una nueva version. En un Deployment, primero se levantan los pods con la nueva version de la aplicacion, luego se transfiere el trafico hacia los nuevos pods y al ultimo se detienen los pods con la version anterior de la aplicacion.
+
+###### Actualizar la version de una aplicacion
+Ejemplo de rollout de un **deployment** llamado _aplicacion1_ en un **namespace** llamado _namespace1_. Teniendo en cuenta que la version de la imagen utilizada es _latest_.
+```bash
+rollout restart deployment/aplicacion1 -n namespace1
+```
+
+Ejemplo de rollout de:
+un **deployment** llamado _aplicacion1_
+con un **container** llamado _app1_
+que utiliza una **imagen** llamada _appimage_
+en un **namespace** llamado _namespace1_.
+Teniendo en cuenta que la version de la imagen utilizada esta especificada y el tag de la **nueva version** es _v2_
+
+```bash
+kubectl set image deployments/aplicacion1 appimage=docker.io/app1:v2 -n namespace1
+```
+
+###### Ver informacion de los rollouts
+Para ver el estado de un rollout de un **deployment** llamado _aplicacion1_ en un **namespace** llamado _namespace1_ debemos ejecutar el siguiente comando.
+```bash
+kubectl rollout status deployments/aplicacion1 -n namespace1
+```
+
+Ver el historial de rollout de un **deployment** llamado _aplicacion1_ en un **namespace** llamado _namespace1_.
+```bash
+kubectl rollout history deployment/aplicacion1 -n namespace1
+```
+
+###### Volver atras
+Para volver atras un rollout y restaurar la version anterior de la aplicacion se pueden utilizar los siguientes comandos.
+
+Volver a la version anterior de la imagen utilizada de un **deployment** llamado _aplicacion1_ en un **namespace** llamado _namespace1_.
+```bash
+kubectl rollout undo deployment/aplicacion1 -n namespace1
+```
+
+Para volver atras teniendo en cuenta un rollout especifico, que se puede obser var con el _kubectl rollout history_,  de un **deployment** llamado _aplicacion1_ en un **namespace** llamado _namespace1_.
+```bash
+kubectl rollout undo deployment/aplicacion1 --to-revision=2 -n namespace1
+```
+
+Para volver atras especificando la version de la imagen, el ejemplo tiene en cuenta lo siguiente:
+un **deployment** llamado _aplicacion1_
+con un **container** llamado _app1_
+que utiliza una **imagen** llamada _appimage_
+en un **namespace** llamado _namespace1_.
+Teniendo en cuenta que la version de la imagen utilizada esta especificada y el tag de la **version anterior es** es _v1_
+
+```bash
+kubectl set image deployments/aplicacion1 appimage=docker.io/app1:v1 -n namespace1
+```
+
+#### Namespace
+
+##### Eventos
+En los eventos se puede encontrar informacion reciente sobre lo que esta pasando en un namspace.
+
+Para ver los eventos de un **namespace** llamado _namespace1_ debemos ejecutar.
+```bash
+kubectl get events -n namespace1
+```
+
+Para ver los eventos de todos los namespaces.
+```bash
+kubectl get events --all-namespaces
+```
+
+#### Port forward
+Con los siguientes comandos se puede acceder directamente a un pod o servicio desde la computadora local y accedera l servicio.
+
+Para el siguiente ejemplo tenemos en cuenta lo siguiente,
+un **pod* llamado _aplicacion1-abc1234_ que brinda una interface web por el **puerto** _80_
+al cual se puede conectar desde un **servicio** llamado _servicio-aplicacion1_ a traves del **puerto** _80_
+en un **namespace** llamado _namespace1_
+
+Para acceder al **puerto** _80_ del pod desde nuestra workstation con la dirección _http://127.0.0.1:4080_ ejecutamos el siguiente comando.
+```bash
+kubectl port-forward pods/aplicacion1-abc1234 4080:80 -n namespace1
+```
+
+Para acceder al **puerto** _80_ del servicio desde nuestra workstation con la dirección _http://127.0.0.1:5080_ ejecutamos el siguiente comando.
+```bash
+kubectl port-forward service/servicio-aplicacion 5080:80 -n namespace1
+```
+
+Luego, simpelmente abrimos nuestro navegador y ponemos la dirección del localhost con los dos puntos para indicar el puerto.
+
+#### Worker Nodes
+
+Obtener informacion basica de los nodos:
+```bash
+#Para listar los nodos:
+kubectl get nodes
+
+#Para obtener una lista de los nodos con informacion extendida:
+kubectl get nodes -o wide
+```
+
+Para obtener los detalles completos de un **nodo* llamado _node01_:
+```bash
+kubectl describe node node01
+```
+
+Para poder observer el uso de recursos de los nodos debemos ejecutar:
+```bash
+kubectl top nodes
+```
+
+Para ver los eventos recientes de los nodos debemos ejecutar:
+```bash
+kubectl get events --field-selector involvedObject.kind=Node
+```
