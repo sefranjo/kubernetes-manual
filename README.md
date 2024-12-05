@@ -558,6 +558,11 @@ El siguiente ejemplo se muestra teniendo en cuenta un **pod** llamado _aplicacio
 ```bash
 kubectl exec -it aplicacion1-abc1234 -n _namespace1_ -- /bin/bash
 ```
+##### Metricas de performance
+Para ver las metricas de performance de un **pod** llamado _aplicacion1-abc1234_ en un **namespace** llamado _namespace1_ podemos ejecutar el siguiente comando.
+```bash
+kubectl top pod _aplicacion1-abc1234 -n namespace1
+```
 
 #### Deployment
 
@@ -619,4 +624,36 @@ kubectl set image deployments/aplicacion1 appimage=docker.io/app1:v1 -n namespac
 #### Namespace
 
 ##### Eventos
-En los eventos se puede encontrar informacion reciente sobre lo que esta pasando en un namspace, incluyendo 
+En los eventos se puede encontrar informacion reciente sobre lo que esta pasando en un namspace.
+
+Para ver los eventos de un **namespace** llamado _namespace1_ debemos ejecutar.
+```bash
+kubectl get events -n namespace1
+```
+
+Para ver los eventos de todos los namespaces.
+```bash
+kubectl get events --all-namespaces
+```
+
+#### Port forward
+Con los siguientes comandos se puede acceder directamente a un pod o servicio desde la computadora local y accedera l servicio.
+
+Para el siguiente ejemplo tenemos en cuenta lo siguiente,
+un **pod* llamado _aplicacion1-abc1234_ que brinda una interface web por el **puerto** _80_
+al cual se puede conectar desde un **servicio** llamado _servicio-aplicacion1_ a traves del **puerto** _80_
+en un **namespace** llamado _namespace1_
+
+Para acceder al **puerto** _80_ del pod desde nuestra workstation con la dirección _http://127.0.0.1:4080_ ejecutamos el siguiente comando.
+```bash
+kubectl port-forward pods/aplicacion1-abc1234 4080:80 -n namespace1
+```
+
+Para acceder al **puerto** _80_ del servicio desde nuestra workstation con la dirección _http://127.0.0.1:5080_ ejecutamos el siguiente comando.
+```bash
+kubectl port-forward service/servicio-aplicacion 5080:80 -n namespace1
+```
+
+Luego, simpelmente abrimos nuestro navegador y ponemos la dirección del localhost con los dos puntos para indicar el puerto.
+
+
