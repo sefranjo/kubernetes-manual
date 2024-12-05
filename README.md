@@ -660,4 +660,28 @@ kubectl port-forward service/servicio-aplicacion 5080:80 -n namespace1
 
 Luego, simpelmente abrimos nuestro navegador y ponemos la dirección del localhost con los dos puntos para indicar el puerto.
 
+#### Worker Nodes
 
+Obtener informacion basica de los nodos:
+```bash
+#Para listar los nodos:
+kubectl get nodes
+
+#Para obtener una lista de los nodos con informacion extendida:
+kubectl get nodes -o wide
+```
+
+Para obtener los detalles completos de un **nodo* llamado _node01_:
+```bash
+kubectl describe node node01
+```
+
+Para poder observer el uso de recursos de los nodos debemos ejecutar:
+```bash
+kubectl top nodes
+```
+
+Para ver los eventos recientes de los nodos debemos ejecutar:
+```bash
+kubectl get events --field-selector involvedObject.kind=Node
+```
