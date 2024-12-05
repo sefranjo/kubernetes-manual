@@ -27,6 +27,7 @@ No pretende reemplazar la documentación con los detalles técnicos de kubernete
     * [Deployment](#Deployment)
     * [Namespace](#Namespace)
     * [Port forward](#Port-forward)
+    * [Worker Nodes](#Worker-Nodes)
 
 ---
 
