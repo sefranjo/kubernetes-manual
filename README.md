@@ -23,6 +23,10 @@ No pretende reemplazar la documentación con los detalles técnicos de kubernete
     * [Servicio](#Servicio)
     * [Ingress](#Ingress)
 - [Comandos utiles](#Comandos-utiles)
+    * [Pods](#Pods)
+    * [Deployment](#Deployment)
+    * [Namespace](#Namespace)
+    * [Port forward](#Port-forward)
 
 ---
 
