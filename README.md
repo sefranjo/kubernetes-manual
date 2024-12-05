@@ -1,5 +1,5 @@
 # kubernetes-manual
-El presente documento pretende ser una introducción al manejo de Kubernetes, para permitir a los programadores con experiencia en Docker poder aprovechar sus características para desplegar aplicaciones.
+El presente documento pretende ser una introducción al manejo de Kubernetes, para permitir a los programadores con experiencia en Docker aprovechar sus funciones para desplegar aplicaciones.
 No pretende reemplazar la documentación con los detalles técnicos de kubernetes, pero si permitir una introducción más sencilla a este mundo.
 
 ## Tabla de contenido
@@ -38,7 +38,7 @@ No pretende reemplazar la documentación con los detalles técnicos de kubernete
 - **Ingress:** Es un servicio del cluster que permite acceder a las aplicaciones desde fuera del cluster, el cual es configurable para redirigir el tráfico acorde al dominio y ruta de la URL de acceso.
 - **Service:** Por defecto, los pods corren de forma aislada dentro de un cluster de Kubernetes, al configurarles un servicio, permitimos el acceso a los mismos de forma controlada, configurando los los puertos correspondientes en el mismo. Cada vez que se crea un servicio, una entrada DNS dentro del cluster es creada para poder utilizarla con el siguiente formato:
    <service-name>.<namespace>.svc.cluster.local.
-También se puede utilizar un servicio para permitir el acceso a un pod desde fuera del cluster, pero habitualmente no es utilizado para ello, ya que Ingress provee mejores y más formas de hacer lo mismo.
+También se puede utilizar un servicio para permitir el acceso a un pod desde fuera del cluster, pero habitualmente no es utilizado para ello, ya que Ingress provee otras formas mejores de hacerlo.
 - **Deployment:** Es un mecanismo de Kubernetes para ejecutar aplicaciones stateless, proveyendo mecanismos para el manejo de su ciclo de vida y su escalamiento horizontal.
 Una de sus principales características esta relacionada con el método en el que se hace el rollout de una nueva versión, para lo cual se inician primero los PODs con la nueva versión de la misma, se redirige el tráfico de los pods de versión previa y recién se dan de baja, una vez que ya no tienen tráfico accediendo a los mismos.
 - **StatefulSet:** Es un mecanismo de Kubernetes para ejecutar aplicaciones stateless, su principal diferencia con un Deployment es que cuando se hace un rollout de una nueva versión, se bajan primero los pods del mismo y una vez que se terminaron de apagar, recién se levantan los pods con la nueva versión.
@@ -76,7 +76,7 @@ El formato de uso es el siguiente:
 kubectl [command] [TYPE] [NAME] [flags]
 ```
 Para obtener ayuda se agrega el flag “-h” al final.
-ejemplo para obtener ayuda sobre como aplicar un archivo de configuracion:
+Ejemplo para obtener ayuda sobre como aplicar un archivo de configuracion:
 ```bash
 kubectl apply -h
 ```
@@ -422,7 +422,7 @@ kubectl apply -f deplyment-ejemplo.yaml -n namespace1
 ```
 
 #### Servicio
-Ahora necesitamos exponer el puerto del del contenedor al cluster y debemos hacerlo con un servicio como el definido a continuacion:
+Ahora necesitamos exponer el puerto del contenedor al cluster y debemos hacerlo con un servicio como el definido a continuacion:
 
 servicio-deployment-ejemplo.yaml
 ```yaml
@@ -465,7 +465,7 @@ Luego solo tenemos que crear el servicio aplicando el archivo de configuración
 kubectl apply -f servicio-deployment-ejemplo.yaml -n namespace1
 ```
 
-y podremos acceder al servicio del pod utilizando el siguiente nombre de dominio dentro del cluster: _nginx-service.namespace1.svc.cluster.local_
+y podremos acceder al servicio del pod utilizando el siguiente nombre de dominio dentro del cluster: `nginx-service.namespace1.svc.cluster.local`
 
 #### Ingress
 Por ultimo, para poder exponer el servicio al mundo exterior debemos configurarle un ingress:
