@@ -237,7 +237,7 @@ kubectl certificate approve juan-csr
 kubectl get csr USER-NAME-csr -o jsonpath='{.status.certificate}' | base64 -d > juan.crt
 ```
 
-##### Conectarse sin generar un archivo kubeconfig
+##### Obtener datos para generar un archivo kubeconfig
 
 Obtener el nombre del cluster:
 ```bash
