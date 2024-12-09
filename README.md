@@ -766,7 +766,7 @@ velero restore create recuperacion-deployment-nginx-namespace1 --include-resourc
 
 **Nota:**
 Para mas inforamcion sobre como filtrar los recursos en una restauracion se pueden fijar en el siguiente link de la documentacion oficial:
-https://velero.io/docs/v1.9/resource-filtering)[https://velero.io/docs/v1.9/resource-filtering]
+[https://velero.io/docs/v1.9/resource-filtering](https://velero.io/docs/v1.9/resource-filtering)
 
 
 Para ver el estado y los detealles de la tarea de restauracion llamada _recuperacion-de-namespace1_:
