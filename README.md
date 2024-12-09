@@ -13,6 +13,7 @@ No pretende reemplazar la documentación con los detalles técnicos de kubernete
     * [Eliminacion de un namespace](#Eliminacion-de-un-namespace)
   * [Manejo de usuarios y cuentas de servicio](#Manejo-de-usuarios-y-cuentas-de-servicio)
     * [Service Account](#Service-Account)
+    * [Listar los usuarios](#Listar-los-usuarios)
     * [Creacion de un usuario](#Creacion-de-un-usuario)
     * [Creacion de un rol](#Creacion-de-un-rol)
     * [Role binding](#Role-binding)
@@ -139,6 +140,13 @@ kubectl config set-context --current --namespace=aplicacion1
 Se utilizan para la automatización de tareas. Lo más común es crear al menos una por namespace para permitir a los pipelines ejecutar tareas sobre el namespace.
 Siguiendo las buenas practicas de la administracion por IaC se puede hacer de la siguiente forma.
 
+##### Listar las service accounts
+```bash
+kubectl get sa -n <nombre del namespace>
+```
+
+##### Creacion de una service account
+
 Crear un archivo para la definicion de la service account:
 _service-account-cicd-namespace1.yaml_
 ```yaml
@@ -189,6 +197,11 @@ kubectl --insecure-skip-tls-verify --kubeconfig="/dev/null" --server=https://<di
 ```
 
 **Nota:** La cuenta de servicio debera ser asignada a un rol para poder operar sobre el namespace _(role_binding)_
+
+#### Listar los usuarios
+```bash
+kubectl config get-users
+```
 
 #### Creacion de un usuario
 
