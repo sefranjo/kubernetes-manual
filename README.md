@@ -216,8 +216,9 @@ openssl genrsa -out juan.key
 
 ##### Crear una CSR (Certificate Signing Request)
 ```bash
-openssl req -new -key juan.key -out juan.csr -subj "/CN=juan"
+openssl req -new -key juan.key -out juan.csr
 ```
+Y hay que responder las preguntas para obtener el CSR
 
 ##### Crear un CertificateSigningRequest para el cluster
 
