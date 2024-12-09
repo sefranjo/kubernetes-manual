@@ -183,6 +183,11 @@ Ejemplo para ver el token en el secret _cicd-sa-token_:
 kubectl get secret $(kubectl get secret | grep cicd-sa-token | awk '{print $1}') -o jsonpath='{.data.token}' | base64 --decode
 ```
 
+Ejemplo de uso del token del service account con el comando kubectl
+```bash
+kubectl --insecure-skip-tls-verify --kubeconfig="/dev/null" --server=https://<direccion web de la administracion del cluster> --token=<token de la SA> get deployments -n namespace1
+```
+
 **Nota:** La cuenta de servicio debera ser asignada a un rol para poder operar sobre el namespace _(role_binding)_
 
 #### Creacion de un usuario
