@@ -204,6 +204,7 @@ kubectl config get-users
 ```
 
 #### Creacion de un usuario
+**Nota**: Si tienes Windows debes utilizar un Linux con WSL para poder ejecutar los siguientes comandos sin problemas.
 
 Para poder crear un usuario hay que realizar los siguientes pasos:
 El ejemplo sirve para crear un usuario llamado _juan_
@@ -216,9 +217,8 @@ openssl genrsa -out juan.key
 
 ##### Crear una CSR (Certificate Signing Request)
 ```bash
-openssl req -new -key juan.key -out juan.csr
+openssl req -new -key juan.key -out juan.csr -subj "/CN=juan"
 ```
-Y hay que responder las preguntas para obtener el CSR
 
 ##### Crear un CertificateSigningRequest para el cluster
 
@@ -276,6 +276,16 @@ kubectl config set-cluster <Nombre-del-Cluster> --server=https://<Cluster-IP-Man
 ##### Agregar la información del login para el usuario Juan
 ```bash
 kubectl config set-credentials juan --client-key=juan.key --client-certificate=juan.crt --embed-certs=true --kubeconfig=juan.conf
+```
+
+##### Configurar el contexto:
+```bash
+kubectl config set-context <Nombre-del-Cluster> --cluster=<Nombre-del-Cluster> --namespace=default --user=juan --kubeconfig=iraguet.conf
+```
+
+##### Configurar el contexto por defecto:
+```bash
+kubectl config use-context <Nombre-del-Cluster> --kubeconfig=juan.conf
 ```
 
 **Notas:**
