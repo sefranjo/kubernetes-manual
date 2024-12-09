@@ -28,6 +28,10 @@ No pretende reemplazar la documentación con los detalles técnicos de kubernete
     * [Namespace](#Namespace)
     * [Port forward](#Port-forward)
     * [Worker Nodes](#Worker-Nodes)
+- [Velero](#Velero)
+    * [Backup de una vez](#Backup-de-una-vez)
+    * [Backup periodico](#Backup-periodico)
+    * [Restauracion](#Restauracion)
 
 ---
 
@@ -685,4 +689,87 @@ kubectl top nodes
 Para ver los eventos recientes de los nodos debemos ejecutar:
 ```bash
 kubectl get events --field-selector involvedObject.kind=Node
+```
+
+### Velero
+A continuacion se detallan los comandos basicos para realizar copias de resguardo con Velero de los namespaces.
+
+#### Backup de una vez
+Esto es util para cuando se esta por realizar un cambio en un namespace y se desea tener una copia de seguridad del momento previo a aplicar el cambio.
+
+Para realizar una copia de resguardo de un namespace llamado _namespace1_ y ponerle de nombre _2024-12-05-resguardo-de-namespace1_ podemos ejecutar el siguiente commando:
+```bash
+velero backup create 024-12-05-resguardo-de-namespace1 --include-namespaces namespace1
+```
+
+Para ver el estado y los detalles de la copia de resguardo llamada _2024-12-05-resguardo-de-namespace1_:
+```bash
+velero backup describe 2024-12-05-resguardo-de-namespace1 --details
+```
+
+Para listar todas las copias de resguardo:
+```bash
+velero backup get
+```
+
+Para eliminar una copia de resguardo de unica vez llamada _2024-12-05-resguardo-de-namespace1_:
+```bash
+velero backup delete 2024-12-05-resguardo-de-namespace1
+```
+
+#### Backup periodico
+Mediante los siguientes comandos podemos establecer copias de resguardo periodicas y establecer un tiempo de retencion para las mismas:
+
+Para crear una configuracion de resguardo periodica llamada _backup-semanal-namespace1_ de lunes a viernes a las 5 AM de un namespace llamado _namespace1_ y mantener las ultimas dos semanas podemos ejecutar el siguiente comando:
+```bash
+velero create schedule backup-semanal-namespace1 --schedule “0 5 * * 1-5” --ttl 336h00m00s --include-namespaces namespace1
+```
+**Notas**:
+--Schedule: Especifica cuando se van a realizar las copias de resguardo y utiliza el formato _Cron_
+--ttl: Especifica el tiempo de retencion, en el formato _XXhXXmXXs_, para la cantidad de dias simplemente tenemos que multiplicarlo por 24, poer ejemplo, para 2 dias el valor seria _48h00m00s_
+
+Para revisar el estado y los detalles de la configuracion de resguardo periodica llamada _backup-semanal-namespace1_ debejemos ejecutar el siguiente comando:
+```bash
+velero schedule describe backup-semana-namespace1
+```
+
+Para listar todas las configuraciones de resguardo periodicas podemos ejecutar:
+```bash
+velero get schedule
+```
+
+**Nota:**
+Los backups individuales generados por las configuraciones de backup periodicas se pueden listar utilizando el comando anteriormente mencionado:
+```bash
+velero get backup
+```
+
+#### Restauracion
+Velero permite restaurar el namespace completo o un recurso del mismo. A continuacion veremos ambos ejemplos
+
+Primero debemos obtener la lista de los backups, para saber cual debemos restaura, lo cual podemos hacer con el comando anteriormente mencionado.
+
+Restaurar un namespace completo de un backup llamado _backup-semanal-namespace1-20241207050003_ y nombrar la tarea como _recuperacion-de-namespace1_:
+```bash
+velero restore create recuperacion-de-namespace1 --from-backup backup-semanal-namespace1-20241207050003
+```
+
+A continuacion damos un ejemplo sobre como restaurar un solo de los deployments de un namespace, teniendo en cuenta lo siguiente:
+**Nombre de la copia de resguardo:** backup-semanal-namespace1-20241207050003
+**Etiqueta utilizada para filtrar el deployment que queremos recuperar:** app
+**Valor de la etiqueta utilizada para filtrar el deployment que queremos recuperar:** nginx
+**Nombre que queremos ponerle a la tarea de restauracion:** recuperacion-deployment-nginx-namespace1
+
+```bash
+velero restore create recuperacion-deployment-nginx-namespace1 --include-resources deployments --selector app=nginx --from-backup backup-semanal-namespace1-20241207050003
+```
+
+**Nota:**
+Para mas inforamcion sobre como filtrar los recursos en una restauracion se pueden fijar en el siguiente link de la documentacion oficial:
+https://velero.io/docs/v1.9/resource-filtering)[https://velero.io/docs/v1.9/resource-filtering]
+
+
+Para ver el estado y los detealles de la tarea de restauracion llamada _recuperacion-de-namespace1_:
+```bash
+velero describe restore recuperacion-de-namespace1 --details
 ```
