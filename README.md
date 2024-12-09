@@ -253,7 +253,7 @@ juan       34s   kubernetes.io/kube-apiserver-client   kubernetes-admin   10d   
 kubectl certificate approve juan-csr
 
 # Obtener el certificado
-kubectl get csr USER-NAME-csr -o jsonpath='{.status.certificate}' | base64 -d > juan.crt
+kubectl get csr juan-csr -o jsonpath='{.status.certificate}' | base64 -d > juan.crt
 ```
 
 ##### Obtener datos para generar un archivo kubeconfig
