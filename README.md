@@ -211,12 +211,12 @@ El ejemplo sirve para crear un usuario llamado _juan_
 ##### Creación de la clave privada para el nuevo usuario:
 
 ```bash
-openssl genrsa -out juan.pem
+openssl genrsa -out juan.key
 ```
 
 ##### Crear una CSR (Certificate Signing Request)
 ```bash
-openssl req -new -key new-user.pem -out juan.csr -subj "/CN=juan"
+openssl req -new -key juan.key -out juan.csr -subj "/CN=juan"
 ```
 
 ##### Crear un CertificateSigningRequest para el cluster
