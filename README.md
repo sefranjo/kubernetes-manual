@@ -285,7 +285,7 @@ kubectl config set-context <Nombre-del-Cluster> --cluster=<Nombre-del-Cluster> -
 
 ##### Configurar el contexto por defecto:
 ```bash
-kubectl config use-context <Nombre-del-Cluster> --kubeconfig=juan.conf
+kubectl config use-context <Nombre-del-contexto> --kubeconfig=juan.conf
 ```
 
 **Notas:**
