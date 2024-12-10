@@ -88,13 +88,13 @@ kubectl apply -h
 ```
 
 #### Configuracioin de acceso para kubectl
-El comando kubectl lee la configuración de acceso al cluster desde el archivo _config_ (también llamado kubeconfig en otras documentaciones) ubicado en:
+El comando kubectl lee la configuración de acceso al cluster desde el archivo `config`, sin extension, ubicado en:
 
 ##Windows##
-C:\Users\<nombre-de-usuario>\.kube\
+`C:\Users\<nombre-de-usuario>\.kube\`
 
 ##Linux##
-/home/<nombre-de-usuario>/.kube
+`/home/<nombre-de-usuario>/.kube`
 
 **Nota:** Si bien con kubectl es posible crear algunos recursos directamente desde la linea de comandos, en las instrucciones de este documento se va a recomendar siempre crear el archivo yaml y luego aplicarlo, teniendo en cuenta las buenas practicas para tener los recursos documentados en un git y preparando todo para manejar el ciclo de vida de los recursos de la aplicacion utilizando IaC.
 
