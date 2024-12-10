@@ -198,11 +198,6 @@ kubectl --insecure-skip-tls-verify --kubeconfig="/dev/null" --server=https://<di
 
 **Nota:** La cuenta de servicio debera ser asignada a un rol para poder operar sobre el namespace _(role_binding)_
 
-#### Listar los usuarios
-```bash
-kubectl config get-users
-```
-
 #### Creacion de un usuario
 **Nota**: Si tienes Windows debes utilizar un Linux con WSL para poder ejecutar los siguientes comandos sin problemas.
 
