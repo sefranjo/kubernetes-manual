@@ -8,6 +8,7 @@ No pretende reemplazar la documentación con los detalles técnicos de kubernete
 - [Prerequisitos](#Prerequisitos)
 - [Manejo del Cluster](#Manejo-del-Cluster)
   * [Comando kubectl](#kubectl)
+    * [Configuracion de acceso para kubectl](#Configuracion-de-acceso-para-kubectl)
   * [Namespaces](#Namespaces)
     * [Creacion de un namespace](#Creacion-de-un-namespace)
     * [Eliminacion de un namespace](#Eliminacion-de-un-namespace)
@@ -87,7 +88,7 @@ Ejemplo para obtener ayuda sobre como aplicar un archivo de configuracion:
 kubectl apply -h
 ```
 
-#### Configuracioin de acceso para kubectl
+#### Configuracion de acceso para kubectl
 El comando kubectl lee la configuración de acceso al cluster desde el archivo `config`, sin extension, ubicado en:
 
 ##Windows##
