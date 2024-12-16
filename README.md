@@ -98,6 +98,66 @@ El comando kubectl lee la configuración de acceso al cluster desde el archivo `
 
 **Nota:** Si bien con kubectl es posible crear algunos recursos directamente desde la linea de comandos, en las instrucciones de este documento se va a recomendar siempre crear el archivo yaml y luego aplicarlo, teniendo en cuenta las buenas practicas para tener los recursos documentados en un git y preparando todo para manejar el ciclo de vida de los recursos de la aplicacion utilizando IaC.
 
+##### Estructura del arachivo de configuracion de kubectl
+La siguiente estructura de configuración permite manejar más de una conexión a un cluster utilizando el archivo de configuración por defecto de _kubectl_.
+
+```yaml
+apiVersion: v1
+kind: Config
+
+clusters:
+- name: cluster-1
+  cluster:
+    certificate-authority-data: XXXXXXXXXXXX # El certificado de CA del Cluster;
+    certificate-authority: /home/user1/.kube/cluster-1-ca.crt # O la ruta del archivo que contiene el CA del Cluster.
+    server: https://192.168.10.190:6443
+
+- name: cluster-2
+  cluster:
+    certificate-authority-data: XXXXXXXXXXXX # El certificado de CA del Cluster;
+    certificate-authority: /home/user1/.kube/cluster-2-ca.crt # O la ruta del archivo que contiene el CA del Cluster.
+
+contexts:
+- context:
+    cluster: cluster-1
+    namespace: app1 # Se puede configurar este valor si se desea cambiar el namespace por defecto al usar kubectl en este contexto.
+    user: kubernetes-admin-1
+  name: cluster-1
+- context:
+    cluster: cluster-2
+    user: kubernetes-admin-2
+  name: cluster-2
+
+current-context: cluster-1 # El conexto o servidor actual.
+
+preferences: {}
+
+users:
+- name: test-user
+  user:
+    client-certificate-data: XXXXXXXXXXXXXXX # El certificado del usuario;
+    client-certificate: /home/.kube/test-user.crt # O la ruta al archivo del certificado del usuario.
+    client-key-data: XXXXXXXXXXXXXXX # El key del usuario;
+    client-key: /home/.kube/test-user.key # O la ruta al archivo del key del usuario.
+- name: dev-user
+  user:
+    client-certificate-data: XXXXXXXXXXXXXXX # El certificado del usuario;
+    client-certificate: /home/.kube/test-user-2.crt # O la ruta al archivo del certificado del usuario.
+    client-key-data: XXXXXXXXXXXXXXX # El key del usuario;
+    client-key: /home/.kube/test-user-2.key # O la ruta al archivo del key del usuario.
+```
+
+##### Cambio de contextos (o servidores)
+```bash
+# Para saber el contexto (o servidor actual)
+kubectl config current-context
+
+# Para cambiar a otro contexto (o servidor)
+kubectl config cluster-2
+
+# y para volver al otro cluster
+kubectl config cluster-2
+```
 ### Namespaces
 Para aplicaciones pequeñas se utiliza un solo namespace para agrupar todos sus recursos. Para aplicaciones más grandes se pueden utilizar más de un namespace, como por ejemplo _systema-backend_ y _systema-frontend_.
 Los nombres soportados son los mismos que para los nombres de dominio, solo pueden contener letras mayusculas, minusculas, numeros y guiones medios.
