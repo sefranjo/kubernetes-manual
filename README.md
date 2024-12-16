@@ -98,7 +98,7 @@ El comando kubectl lee la configuración de acceso al cluster desde el archivo `
 
 **Nota:** Si bien con kubectl es posible crear algunos recursos directamente desde la linea de comandos, en las instrucciones de este documento se va a recomendar siempre crear el archivo yaml y luego aplicarlo, teniendo en cuenta las buenas practicas para tener los recursos documentados en un git y preparando todo para manejar el ciclo de vida de los recursos de la aplicacion utilizando IaC.
 
-##### Estructura del arachivo de configuracion de kubectl
+##### Estructura del archivo de configuracion de kubectl
 La siguiente estructura de configuración permite manejar más de una conexión a un cluster utilizando el archivo de configuración por defecto de _kubectl_.
 
 ```yaml
