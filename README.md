@@ -150,13 +150,16 @@ users:
 
 ##### Cambio de contextos (o servidores)
 ```bash
-# Para saber el contexto (o servidor actual)
+# Listar los contextos configurados:
+kubectl config get-contexts
+
+# Para saber el contexto (o servidor actual):
 kubectl config current-context
 
-# Para cambiar a otro contexto (o servidor)
+# Para cambiar a otro contexto (o servidor):
 kubectl config cluster-2
 
-# y para volver al otro cluster
+# y para volver al otro cluster:
 kubectl config cluster-2
 ```
 ### Namespaces
