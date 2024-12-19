@@ -345,8 +345,8 @@ kubectl config use-context <Nombre-del-contexto> --kubeconfig=juan.conf
 - El usuario debera ser asignado a un rol para poder operar sobre un cluster _(Role Binding)_
 
 #### Creacion de un rol:
-La configuracion de roles de Kubernetes permite crear un sinfin de combinaciones para permitir ciertas acciones y negar otras.
-A continuacion solo se brindara un ejemplo para crear un rol de admin para un Namespace, que luego podra ser utilizado para una Service Account utilizado para los pipelines para mantener el ciclo de vida de la aplicacion o un programador que deba tener acceso de admin a todos los recursos del mismo.
+La configuración de roles de Kubernetes permite crear un sinfín de combinaciones para permitir ciertas acciones y negar otras.
+A continuación, solo se brindará un ejemplo para crear un rol de admin para un Namespace, que luego podrá ser utilizado para una Service Account utilizado para los pipelines para mantener el ciclo de vida de la aplicación o un programador que deba tener acceso de admin a todos los recursos del mismo.
 
 Primero vamos a crear un archivo para definir el rol para un namespace llamado _aplicaciones-juan_
 
@@ -363,7 +363,7 @@ rules:
     verbs: ["*"]
 ```
 
-Luego ejecutamos el siguiente comando para aplicar la configuracion del archivo yc rear el rol:
+Luego ejecutamos el siguiente comando para aplicar la configuración del archivo y crear el rol:
 
 ```bash
 kubectl apply -f aplicaciones-juan-admin.yaml
@@ -630,11 +630,15 @@ kubectl get pods -n namespace1 -o wide
 ##### Logs
 Ver los logs de un **pod** llamado _aplicacion1-abc1234_ de un **deployment** llamado _aplicacion1_ en un **namespace** llamado _namespace1_
 ```bash
-# Es quizás, el primer comando a ejecutar para ver si un pod inicio y esta funcionando correctamente
-kubectl describe pods/aplicacion1 -n _namespace1_
+
+# Comando para obtener information del estado y chequear si los pods del deployment funcionan correctamente
+kubectl describe pods aplicacion1 -n namespace1
+
+# Comando a ejecutar para ver si un pod inicio y esta funcionando correctamente
+kubectl describe pods aplicacion1-abc1234 -n namespace1
 
 # Ver los logs de un pod
-kubectl logs aplicacion1-abc1234 -n _namespace1_
+kubectl logs aplicacion1-abc1234 -n namespace1
 
 # Ver los logs de todos los pods corriendo dentro de un deployment
 kubectl logs deployment/aplicacion1
@@ -646,12 +650,12 @@ Si es necesario entrar a un pod para ejecutar comandos se puede hacer de la sigu
 El siguiente ejemplo se muestra teniendo en cuenta un **pod** llamado _aplicacion1-abc1234_ en un **namespace** llamado _namespace1_ y permite abrir una sesión interactiva de shell.
 
 ```bash
-kubectl exec -it aplicacion1-abc1234 -n _namespace1_ -- /bin/bash
+kubectl exec -it aplicacion1-abc1234 -n namespace1 -- /bin/bash
 ```
 ##### Metricas de performance
 Para ver las metricas de performance de un **pod** llamado _aplicacion1-abc1234_ en un **namespace** llamado _namespace1_ podemos ejecutar el siguiente comando.
 ```bash
-kubectl top pod _aplicacion1-abc1234 -n namespace1
+kubectl top pod aplicacion1-abc1234 -n namespace1
 ```
 
 #### Deployment
@@ -662,7 +666,7 @@ Esto permite reiniciar los pods para levantar una nueva imagen con una nueva ver
 ###### Actualizar la version de una aplicacion
 Ejemplo de rollout de un **deployment** llamado _aplicacion1_ en un **namespace** llamado _namespace1_. Teniendo en cuenta que la version de la imagen utilizada es _latest_.
 ```bash
-rollout restart deployment/aplicacion1 -n namespace1
+kubectl rollout restart deployment/aplicacion1 -n namespace1
 ```
 
 Ejemplo de rollout de:
@@ -687,7 +691,7 @@ Ver el historial de rollout de un **deployment** llamado _aplicacion1_ en un **n
 kubectl rollout history deployment/aplicacion1 -n namespace1
 ```
 
-###### Volver atras
+###### Volver atrás
 Para volver atras un rollout y restaurar la version anterior de la aplicacion se pueden utilizar los siguientes comandos.
 
 Volver a la version anterior de la imagen utilizada de un **deployment** llamado _aplicacion1_ en un **namespace** llamado _namespace1_.
@@ -695,12 +699,12 @@ Volver a la version anterior de la imagen utilizada de un **deployment** llamado
 kubectl rollout undo deployment/aplicacion1 -n namespace1
 ```
 
-Para volver atras teniendo en cuenta un rollout especifico, que se puede obser var con el _kubectl rollout history_,  de un **deployment** llamado _aplicacion1_ en un **namespace** llamado _namespace1_.
+Para volver atras teniendo en cuenta un rollout especifico, que se puede observar con el _kubectl rollout history_,  de un **deployment** llamado _aplicacion1_ en un **namespace** llamado _namespace1_.
 ```bash
 kubectl rollout undo deployment/aplicacion1 --to-revision=2 -n namespace1
 ```
 
-Para volver atras especificando la version de la imagen, el ejemplo tiene en cuenta lo siguiente:
+Para volver atrás especificando la versión de la imagen, el ejemplo tiene en cuenta lo siguiente:
 un **deployment** llamado _aplicacion1_
 con un **container** llamado _app1_
 que utiliza una **imagen** llamada _appimage_
@@ -714,7 +718,7 @@ kubectl set image deployments/aplicacion1 appimage=docker.io/app1:v1 -n namespac
 #### Namespace
 
 ##### Eventos
-En los eventos se puede encontrar informacion reciente sobre lo que esta pasando en un namspace.
+En los eventos se puede encontrar informacion reciente sobre lo que esta pasando en un namespace.
 
 Para ver los eventos de un **namespace** llamado _namespace1_ debemos ejecutar.
 ```bash
@@ -727,7 +731,7 @@ kubectl get events --all-namespaces
 ```
 
 #### Port forward
-Con los siguientes comandos se puede acceder directamente a un pod o servicio desde la computadora local y accedera l servicio.
+Con los siguientes comandos se puede acceder directamente a un pod o servicio desde la computadora local.
 
 Para el siguiente ejemplo tenemos en cuenta lo siguiente,
 un **pod* llamado _aplicacion1-abc1234_ que brinda una interface web por el **puerto** _80_
@@ -773,6 +777,7 @@ kubectl get events --field-selector involvedObject.kind=Node
 ```
 
 ### Velero
+Para su instalación, visitar el siguient link: https://velero.io/docs/v1.15/basic-install/
 A continuacion se detallan los comandos basicos para realizar copias de resguardo con Velero de los namespaces.
 
 #### Backup de una vez
@@ -780,7 +785,7 @@ Esto es util para cuando se esta por realizar un cambio en un namespace y se des
 
 Para realizar una copia de resguardo de un namespace llamado _namespace1_ y ponerle de nombre _2024-12-05-resguardo-de-namespace1_ podemos ejecutar el siguiente commando:
 ```bash
-velero backup create 024-12-05-resguardo-de-namespace1 --include-namespaces namespace1
+velero backup create 2024-12-05-resguardo-de-namespace1 --include-namespaces namespace1
 ```
 
 Para ver el estado y los detalles de la copia de resguardo llamada _2024-12-05-resguardo-de-namespace1_:
@@ -798,7 +803,7 @@ Para eliminar una copia de resguardo de unica vez llamada _2024-12-05-resguardo-
 velero backup delete 2024-12-05-resguardo-de-namespace1
 ```
 
-#### Backup periodico
+#### Backup periódico
 Mediante los siguientes comandos podemos establecer copias de resguardo periodicas y establecer un tiempo de retencion para las mismas:
 
 Para crear una configuracion de resguardo periodica llamada _backup-semanal-namespace1_ de lunes a viernes a las 5 AM de un namespace llamado _namespace1_ y mantener las ultimas dos semanas podemos ejecutar el siguiente comando:
@@ -806,8 +811,8 @@ Para crear una configuracion de resguardo periodica llamada _backup-semanal-name
 velero create schedule backup-semanal-namespace1 --schedule “0 5 * * 1-5” --ttl 336h00m00s --include-namespaces namespace1
 ```
 **Notas**:
---Schedule: Especifica cuando se van a realizar las copias de resguardo y utiliza el formato _Cron_
---ttl: Especifica el tiempo de retencion, en el formato _XXhXXmXXs_, para la cantidad de dias simplemente tenemos que multiplicarlo por 24, poer ejemplo, para 2 dias el valor seria _48h00m00s_
+--schedule: Especifica cuando se van a realizar las copias de resguardo y utiliza el formato _Cron_
+--ttl: Especifica el tiempo de retencion, en el formato _XXhXXmXXs_, para la cantidad de dias simplemente tenemos que multiplicarlo por 24, por ejemplo, para 2 dias el valor seria _48h00m00s_
 
 Para revisar el estado y los detalles de la configuracion de resguardo periodica llamada _backup-semanal-namespace1_ debejemos ejecutar el siguiente comando:
 ```bash
