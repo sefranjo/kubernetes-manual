@@ -153,7 +153,7 @@ kubectl config current-context
 kubectl config use-context cluster-2
 
 # y para volver al otro cluster:
-kubectl config use-context cluster-2
+kubectl config use-context cluster-1
 ```
 ### Namespaces
 Para aplicaciones pequeñas se utiliza un solo namespace para agrupar todos sus recursos. Para aplicaciones más grandes se pueden utilizar más de un namespace, como por ejemplo _systema-backend_ y _systema-frontend_.
