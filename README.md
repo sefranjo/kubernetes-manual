@@ -68,9 +68,8 @@ Bajar e instalar _kubectl_ desde el siguiente enlace:
 Muchos de los comandos mencionados en este documento necesitan bash, por lo que es recomendable utilizarlos con el shell de bash provisto provisto por Git, CygWin o WSL.
 Si si están accediendo desde Linux no necesitan bajar el cliente de git con el shell de bash.
 
-La opcion mas sencilla podria ser descargarse el cliente offical de GiT e instalarlo con la opcion _"Git Bash"_ habilitada:
-[https://git-scm.com/downloads/win]([https://kubernetes.io/docs/tasks/tools/](https://git-scm.com/downloads/win)
-
+La mejor opción, desde mi punto de vista, es instalar Ubuntu (u otra de su preferencia) con WSL2.
+[Install Ubuntu on WSL2](https://documentation.ubuntu.com/wsl/en/latest/guides/install-ubuntu-wsl2/)
 ---
 
 ## Manejo del Cluster
