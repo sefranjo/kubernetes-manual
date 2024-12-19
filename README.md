@@ -103,8 +103,6 @@ La siguiente estructura de configuración permite manejar más de una conexión 
 
 ```yaml
 apiVersion: v1
-
-
 clusters:
 - cluster:
     certificate-authority-data: XXXXXXXXXXXX # El certificado de CA del Cluster;
