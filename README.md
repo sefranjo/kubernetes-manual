@@ -103,20 +103,18 @@ La siguiente estructura de configuración permite manejar más de una conexión 
 
 ```yaml
 apiVersion: v1
-kind: Config
+
 
 clusters:
-- name: cluster-1
-  cluster:
+- cluster:
     certificate-authority-data: XXXXXXXXXXXX # El certificado de CA del Cluster;
     certificate-authority: /home/user1/.kube/cluster-1-ca.crt # O la ruta del archivo que contiene el CA del Cluster.
     server: https://192.168.10.190:6443
-
-- name: cluster-2
-  cluster:
+  name: cluster-1
+- cluster:
     certificate-authority-data: XXXXXXXXXXXX # El certificado de CA del Cluster;
     certificate-authority: /home/user1/.kube/cluster-2-ca.crt # O la ruta del archivo que contiene el CA del Cluster.
-
+  name: cluster-2
 contexts:
 - context:
     cluster: cluster-1
@@ -127,11 +125,9 @@ contexts:
     cluster: cluster-2
     user: kubernetes-admin-2
   name: cluster-2
-
 current-context: cluster-1 # El conexto o servidor actual.
-
+kind: Config
 preferences: {}
-
 users:
 - name: test-user
   user:
