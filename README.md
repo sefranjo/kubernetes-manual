@@ -345,8 +345,8 @@ kubectl config use-context <Nombre-del-contexto> --kubeconfig=juan.conf
 - El usuario debera ser asignado a un rol para poder operar sobre un cluster _(Role Binding)_
 
 #### Creacion de un rol:
-La configuracion de roles de Kubernetes permite crear un sinfin de combinaciones para permitir ciertas acciones y negar otras.
-A continuacion solo se brindara un ejemplo para crear un rol de admin para un Namespace, que luego podra ser utilizado para una Service Account utilizado para los pipelines para mantener el ciclo de vida de la aplicacion o un programador que deba tener acceso de admin a todos los recursos del mismo.
+La configuración de roles de Kubernetes permite crear un sinfín de combinaciones para permitir ciertas acciones y negar otras.
+A continuación, solo se brindará un ejemplo para crear un rol de admin para un Namespace, que luego podrá ser utilizado para una Service Account utilizado para los pipelines para mantener el ciclo de vida de la aplicación o un programador que deba tener acceso de admin a todos los recursos del mismo.
 
 Primero vamos a crear un archivo para definir el rol para un namespace llamado _aplicaciones-juan_
 
@@ -363,7 +363,7 @@ rules:
     verbs: ["*"]
 ```
 
-Luego ejecutamos el siguiente comando para aplicar la configuracion del archivo yc rear el rol:
+Luego ejecutamos el siguiente comando para aplicar la configuración del archivo y crear el rol:
 
 ```bash
 kubectl apply -f aplicaciones-juan-admin.yaml
