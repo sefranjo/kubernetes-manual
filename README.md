@@ -748,6 +748,11 @@ Para acceder al **puerto** _80_ del servicio desde nuestra workstation con la di
 kubectl port-forward service/servicio-aplicacion 5080:80 -n namespace1
 ```
 
+Si queremos exponer el puerto redirigido a todas las IPs de la estación de trabajo donde lo ejecutamos (util si se usa WSL por ejemplo, para poder acceder desde el host).
+```bash
+kubectl port-forward --address 0.0.0.0 service/servicio-aplicacion 5080:80 -n namespace1
+```
+
 Luego, simpelmente abrimos nuestro navegador y ponemos la dirección del localhost con los dos puntos para indicar el puerto.
 
 #### Worker Nodes
