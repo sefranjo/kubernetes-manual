@@ -813,7 +813,7 @@ Para eliminar una copia de resguardo de unica vez llamada _2024-12-05-resguardo-
 velero backup delete 2024-12-05-resguardo-de-namespace1
 ```
 
-#### Backup periódico
+#### Backup periodico
 Mediante los siguientes comandos podemos establecer copias de resguardo periodicas y establecer un tiempo de retencion para las mismas:
 
 Para crear una configuracion de resguardo periodica llamada _backup-semanal-namespace1_ de lunes a viernes a las 5 AM de un namespace llamado _namespace1_ y mantener las ultimas dos semanas podemos ejecutar el siguiente comando:
